@@ -7,7 +7,7 @@ all: compile_basic compile_rank compile_size compile_compression
 
 
 compile_basic:
-	$(CXX) $(CXXFLAGS) basicImplemention.c -o basic
+	$(CXX) $(CXXFLAGS) basicImplementation.c -o basic
 
 
 compile_rank:
