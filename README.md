@@ -3,9 +3,12 @@
 </h1>
 <h4 align="center"> Disjoint Set implementation </h4>
 
-## About
-The goal of this project is to create verified implemention of the Disjoint Set in programming language C.
-For the verification, there will be used ACSL (ANSI/ISO C Specification Language), especially Frama-C framework.
+## Topic
+We commonly find various code implementations online, which we need to use in our projects. However, there is a problem with how to know that the code does what it has to do correctly and at the same time does nothing extra. For these purposes, it is possible to use the ACSL annotation language (in the case of C programming language, specifically the Frama-C framework), whose task is formally proving that the code is correct. The aim of this bachelor thesis is: 
+* Research the Frama-C framework. 
+* Research the possible Disjoint-Set data structure implementation. 
+* Implement some of them in C programming language.
+* Compare the performance of our implementations.
 
 ## Framework
 ### Frama-C
