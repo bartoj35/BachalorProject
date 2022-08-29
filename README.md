@@ -4,5 +4,5 @@
 <h4 align="center"> Disjoint Set implementation </h4>
 
 ## About
-This project was created as showcase of implementation of Disjoint Set and usage of Frama-C framework for verification of the correctness.
-
+The goal of this project is to create verified implemention of the Disjoint Set in programming language C.
+For the verification, there will be used ACSL (ANSI/ISO C Specification Language), especially Frama-C framework.
