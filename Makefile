@@ -1,5 +1,6 @@
 CXX				= gcc
 CXXFLAGS		= -Wall -Werror -pedantic -O3 -o project
+CXXMEMFLAGS		= -g -fsanitize=address
 
 
 all: compile
@@ -13,5 +14,9 @@ clean:
 	rm -rf project
 
 
-run:
+memory_compile:
+	$(CXX) $(CXXMEMFLAGS) main.c
+
+
+run: compile
 	./project
