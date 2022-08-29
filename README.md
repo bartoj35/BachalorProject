@@ -1,5 +1,5 @@
 <h1 align="center">
-  🧑‍🎓Bachalor Project🧑‍🎓
+  🧑‍🎓Bachelor Project🧑‍🎓
 </h1>
 <h4 align="center"> Disjoint Set implementation </h4>
 
