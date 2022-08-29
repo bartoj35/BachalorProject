@@ -59,9 +59,27 @@ void freeSet ( DisjointSet ** set ) {
 }
 
 
+void printSet ( DisjointSet * set ) {
+	if ( set != NULL ) {
+		printf ( "Size of the set is: %d\n", set -> size );
+	}
+	printf ( "{ " );	
+	if ( set != NULL ) {
+		for ( int i = 0; i < set -> size; i ++ ) {\
+			printf ( "%d", set -> parents [ i ] );
+			if ( i != set -> size - 1 ) { 
+				printf ( ", " );\
+			}
+		} 
+	}
+	printf ( " }\n" );
+}
+
+
 int main ( ) {
 	DisjointSet * set = NULL;
 	makeSet ( 5, & set ); 
+	printSet ( set );
 	freeSet ( & set );
 	return 0;
 }
