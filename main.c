@@ -47,7 +47,52 @@ bool makeSet ( int size, DisjointSet ** set  ) {
 		return false;
 	}
 }
+
+
+bool find ( int elementIndex, DisjointSet * set, int * setID ) {
+	if ( set == NULL ) {
+		printf ( "The element is not in set!\n" );
+		return false;
+	}
+	else {
+		if ( elementIndex >= 0 && elementIndex < set -> size ) {
+			* setID = set -> parents [ elementIndex ];
+			
+			while ( ( * setID ) != set -> parents [ * setID ] ) {
+				* setID = set -> parents [ * setID ];
+			}
+
+			return true;
+		}
+		else {
+			printf ( "Invalid element index!\n" );
+			return false;
+		}
+	}
+}
 	
+bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
+	if ( ( * set ) != NULL &&  elementIndex1 >= 0 && elementIndex1 < ( * set ) -> size && elementIndex2 >= 0 && elementIndex2 < ( * set ) -> size ) {
+		int firstParent = 0, secondParent = 0;
+		find ( elementIndex1, * set, & firstParent );
+		find ( elementIndex2, * set, & secondParent );
+		( * set ) -> parents [ secondParent ] = firstParent;
+		return true;
+	}
+	else if ( ( * set ) == NULL ) {
+		printf ( "Can't union elements of empty set!\n" );
+		return false;
+	}
+	else if ( elementIndex1 >= 0 || elementIndex1 <= ( * set ) -> size ) {
+		printf ( "Invalid index for first element!\n" );
+		return false;
+	}
+	else {
+		printf ( "Invalid index for second element!\n" );
+		return false;
+	}
+}
+
 
 void freeSet ( DisjointSet ** set ) {
 	if ( ( * set ) != NULL ) {
@@ -78,7 +123,25 @@ void printSet ( DisjointSet * set ) {
 
 int main ( ) {
 	DisjointSet * set = NULL;
-	makeSet ( 5, & set ); 
+	makeSet ( 5, & set );
+
+	for ( int i = 0; i < 5; i ++ ) {
+		int parent = 0;
+		find ( i, set, & parent );
+		printf ( "%d's parent is: %d\n", i, parent ); 
+		printSet ( set );
+		printf ( "\n\n" );
+	}
+	
+	for ( int i = 0; i < 4; i ++ ) {
+		unionSet ( i, i + 1, & set );
+		int parent = 0;
+		find ( i, set, & parent );
+		printf ( "%d union %d:\t%d's parent is: %d\n", i, i + 1, i, parent ); 
+		printSet ( set );
+		printf ( "\n\n" );
+	}
+
 	printSet ( set );
 	freeSet ( & set );
 	return 0;
