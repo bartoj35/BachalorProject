@@ -14,3 +14,12 @@ We commonly find various code implementations online, which we need to use in ou
 ### Frama-C
 [Frama-C](https://frama-c.com/) is framework for performing analysis of the source code written in C, C++, ...
 Framework contains a lot of plugins for various analysis, from generating annotations about possible overflow of the variables to verification of the concurent programs.
+
+
+## TODO
+* Test implementations properly
+* Write ACSL annotation comments
+* Fuzzer for generating calls of functions for benchmarks
+* [Flush cache](https://www.tecmint.com/clear-ram-memory-cache-buffer-and-swap-space-on-linux/) before every benchmark
+* Use benchmark utilities
+* Try symbolic execution engine (using some server for that? maybe ICT) (recommendation by [Soptik](https://github.com/SoptikHa2): KLEE, EXE)
