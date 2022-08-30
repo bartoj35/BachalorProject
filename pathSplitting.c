@@ -75,8 +75,8 @@ bool find ( int elementIndex, DisjointSet ** set, int * setID ) {
 			* setID = elementIndex;
 			
 			while ( ( * setID ) != ( * set ) -> parents [ * setID ] ) {
-				int tmp = * setId;
-				* setID = ( * set ) -> parents [ * setId ];
+				int tmp = * setID;
+				* setID = ( * set ) -> parents [ * setID ];
 				( * set ) -> parents [ tmp ] = ( * set ) -> parents [ * setID ];  
 			}
 
