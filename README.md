@@ -17,7 +17,6 @@ Framework contains a lot of plugins for various analysis, from generating annota
 
 
 ## TODO
-* Test implementations properly
 * Write ACSL annotation comments
 * Fuzzer for generating calls of functions for benchmarks
 * [Flush cache](https://www.tecmint.com/clear-ram-memory-cache-buffer-and-swap-space-on-linux/) before every benchmark
