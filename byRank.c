@@ -133,7 +133,12 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
 		int firstParent = 0, secondParent = 0;
 		find ( elementIndex1, * set, & firstParent );
 		find ( elementIndex2, * set, & secondParent );
-		
+
+		if ( firstParent == secondParent ) {
+			printf ( "Elements are in the same set!\n" );
+			return false;
+		}
+
 		if ( ( * set ) -> ranks [ firstParent ] > ( * set ) -> ranks [ secondParent ] ) {
 			if ( swap ( & firstParent, & secondParent ) == false ) {
 				printf ( "Could not swap 2 integers!\n" );

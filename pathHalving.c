@@ -76,7 +76,7 @@ bool find ( int elementIndex, DisjointSet ** set, int * setID ) {
 			
 			while ( ( * setID ) != ( * set ) -> parents [ * setID ] ) {
 				( * set ) -> parents [ * setID ] = ( * set ) -> parents [ ( * set ) -> parents [ * setID ] ];
-				( * setId ) = ( * set ) -> parents [ * setID ];
+				( * setID ) = ( * set ) -> parents [ * setID ];
 			}
 
 			return true;
@@ -99,6 +99,12 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
 		int firstParent = 0, secondParent = 0;
 		find ( elementIndex1, set, & firstParent );
 		find ( elementIndex2, set, & secondParent );
+		
+		if ( firstParent == secondParent ) {
+			printf ( "Elements are in the same set!\n" );
+			return false;
+		}
+
 		( * set ) -> parents [ secondParent ] = firstParent;
 		return true;
 	}
