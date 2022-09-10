@@ -2,76 +2,142 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#define DEFAULT_CAPACITY 2
+
 
 typedef struct TDisjointSet {
-	int *	parents;
 	int *	ranks;
+	int *	parents;
+	int *	elements;
+	int 	capacity;
 	int 	size;
 } DisjointSet;
 
 
 
-// create new disjoint set (allocate memory for the parents and ranks and initialize them
+// create new disjoint set (allocate memory for the parents and initialize them
 // checks for valid size parameter (non-negative integer)
 // checks if set is not already allocated (would not cause overwriting of address => definite memory loss)
 // param size - count of the elements in future disjoint set
 // param set - pointer to the address of the disjoint set
 // return	- true -> created valid set
 //	 		- false -> could not create set
-bool makeSet ( int size, DisjointSet ** set  ) {
+bool makeSet ( int element, DisjointSet ** set  ) {
 	if ( ( * set ) == NULL ) {
-		if ( size > 0 ) {
-			* set = ( DisjointSet * ) malloc ( 1 * sizeof ( DisjointSet ) );
-			if ( * set != NULL ) {
-				( * set ) -> size = size;
-				( * set ) -> parents = ( int * ) malloc ( ( ( * set ) -> size ) * sizeof ( ( * set ) -> parents ) );
+		* set = ( DisjointSet * ) malloc ( 1 * sizeof ( DisjointSet ) );
+		if ( * set != NULL ) {
+			( * set ) -> size = 1;
+			( * set ) -> capacity = DEFAULT_CAPACITY;
+			( * set ) -> parents = ( int * ) malloc ( DEFAULT_CAPACITY * sizeof ( ( * set ) -> parents ) );
+			( * set ) -> elements = ( int * ) malloc ( DEFAULT_CAPACITY * sizeof ( ( * set ) -> elements ) );
+			( * set ) -> ranks = ( int * ) malloc ( DEFAULT_CAPACITY * sizeof ( ( * set ) -> ranks ) );
+
+			if ( ( * set ) -> parents != NULL && ( * set ) -> elements != NULL && ( * set ) -> ranks != NULL ) {
+				( * set ) -> parents [ 0 ] = 0;
+				( * set ) -> elements [ 0 ] = element;
+				( * set ) -> ranks [ 0 ] = 0;
+				return true;
+			}
+			else {
 				if ( ( * set ) -> parents != NULL ) {
-					for ( int i = 0; i < ( * set ) -> size; i ++ ) {
-						( * set ) -> parents [ i ] = i;
-					}
-					( * set ) -> ranks = ( int * ) malloc ( ( ( * set ) -> size ) * sizeof ( ( * set ) -> ranks ) );
-				       	if ( ( * set ) -> ranks != NULL ) {
-						for ( int i = 0; i < ( * set ) -> size; i ++ ) {
-							( * set ) -> ranks [ i ] = 0;
-						}
-						return true;
-					}
-					else {
-						printf ( "Could not allocate ranks!\n" );
-						( * set ) -> size = 0;
-						free ( ( * set ) -> parents );
-						( * set ) -> parents = NULL;
-						free ( * set );
-						( * set ) = NULL;
-						return false;
-					}
+					free ( ( * set ) -> parents );
+					( * set ) -> parents = NULL;
 				}
 				else {
-					printf ( "Could not allocate part of set!\n" );
+					printf ( "Could not allocate parents\n" );
+				}
+			
+				if ( ( * set ) -> elements != NULL ) {
+					free ( ( * set ) -> elements );
+					( * set ) -> elements = NULL;
+				}
+				else {
+					printf ( "Could not allocate elements\n" );
+				}
+
+				if ( ( * set ) -> ranks != NULL ) {
+						free ( ( * set ) -> ranks );
+						( * set ) -> ranks = NULL;
+					}
+					else {
+						printf ( "Could not allocate ranks\n" );
+					}
+
+				( * set ) -> capacity = 0;
+				( * set ) -> size = 0;
+				free ( * set );
+				( * set ) = NULL;
+				return false;
+			}
+		}
+		else {
+			printf ( "Could not allocate set!\n" );
+			return false;
+		}
+	}
+	else {
+		if ( ( * set ) -> capacity == ( * set ) -> size ) {
+			( * set ) -> capacity *= 2;
+			( * set ) -> elements = ( int * ) realloc ( ( * set ) -> elements, ( * set ) -> capacity * sizeof ( * ( * set ) -> elements ) );	
+			( * set ) -> parents = ( int * ) realloc ( ( * set ) -> parents, ( * set ) -> capacity * sizeof ( * ( * set ) -> parents ) );	
+			( * set ) -> ranks = ( int * ) realloc ( ( * set ) -> ranks, ( * set ) -> capacity * sizeof ( * ( * set ) -> ranks ) );	
+			
+			if ( ( * set ) -> parents != NULL && ( * set ) -> elements != NULL && ( * set ) -> ranks != NULL ) {
+				( * set ) -> size ++;
+				( * set ) -> parents [ ( *set ) -> size - 1 ] = ( *set ) -> size - 1;
+				( * set ) -> elements [ ( *set ) -> size - 1 ] = element;
+				( * set ) -> ranks [ ( *set ) -> size - 1 ] = 0;
+				return true;
+			}
+			else {
+				if ( ( * set ) -> parents != NULL && ( * set ) -> elements != NULL ) {
+					( * set ) -> parents [ 0 ] = 0;
+					( * set ) -> elements [ 0 ] = element;
+					return true;
+				}
+				else {
+					if ( ( * set ) -> parents != NULL ) {
+						free ( ( * set ) -> parents );
+						( * set ) -> parents = NULL;
+					}
+					else {
+						printf ( "Could not allocate parents\n" );
+					}
+			
+					if ( ( * set ) -> elements != NULL ) {
+						free ( ( * set ) -> elements );
+						( * set ) -> elements = NULL;
+					}
+					else {
+						printf ( "Could not allocate elements\n" );
+					}
+
+					if ( ( * set ) -> ranks != NULL ) {
+						free ( ( * set ) -> ranks );
+						( * set ) -> ranks = NULL;
+					}
+					else {
+						printf ( "Could not allocate ranks\n" );
+					}
+
+					( * set ) -> capacity = 0;
 					( * set ) -> size = 0;
 					free ( * set );
 					( * set ) = NULL;
 					return false;
 				}
 			}
-			else {
-				printf ( "Could not allocate set!\n" );
-				return false;
-			}
-		}
-		else if ( size == 0 ) {
-			return true;
 		}
 		else {
-			printf ( "Invalid set size!\n" );
-			return false;
+			( * set ) -> size ++; 	
+			( * set ) -> parents [ ( *set ) -> size - 1 ] = ( *set ) -> size - 1;
+			( * set ) -> elements [ ( *set ) -> size - 1 ] = element;
+			( * set ) -> ranks [ ( *set ) -> size - 1 ] = 0;
+			return true;
 		}
 	}
-	else {
-		printf ( "Set already exists!\n" );
-		return false;
-	}
 }
+
 
 
 // find the ID of the set to which the element belongs
@@ -171,11 +237,14 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
 // param set - pointer to address of the set
 void freeSet ( DisjointSet * set ) {
 	if ( set != NULL ) {
-		free ( set -> parents );
 		free ( set -> ranks );
-		set -> parents = NULL;
 		set -> ranks = NULL;
+		free ( set -> parents );
+		set -> parents = NULL;
+		free ( set -> elements );
+		set -> elements = NULL;
 		set -> size = 0;
+		set -> capacity = 0;
 		free ( & ( * set ) );
 	}
 }
@@ -211,7 +280,10 @@ void printSet ( DisjointSet * set ) {
 
 int main ( ) {
 	DisjointSet * set = NULL;
-	makeSet ( 6, & set );
+	for ( int i = 0; i < 6; i ++ ) {
+		makeSet ( i, & set );
+	}
+
 
 	unionSet ( 0, 1, & set ); 
 	unionSet ( 2, 1, & set ); 

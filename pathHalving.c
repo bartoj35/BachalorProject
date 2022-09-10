@@ -2,9 +2,13 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#define DEFAULT_CAPACITY 2
+
 
 typedef struct TDisjointSet {
 	int *	parents;
+	int *	elements;
+	int 	capacity;
 	int 	size;
 } DisjointSet;
 
@@ -17,42 +21,98 @@ typedef struct TDisjointSet {
 // param set - pointer to the address of the disjoint set
 // return	- true -> created valid set
 //	 		- false -> could not create set
-bool makeSet ( int size, DisjointSet ** set  ) {
+bool makeSet ( int element, DisjointSet ** set  ) {
 	if ( ( * set ) == NULL ) {
-		if ( size > 0 ) {
-			* set = ( DisjointSet * ) malloc ( 1 * sizeof ( DisjointSet ) );
-			if ( * set != NULL ) {
-				( * set ) -> size = size;
-				( * set ) -> parents = ( int * ) malloc ( ( ( * set ) -> size ) * sizeof ( ( * set ) -> parents ) );		// parentheses around resultSet . size are just to increase readablity
+		* set = ( DisjointSet * ) malloc ( 1 * sizeof ( DisjointSet ) );
+		if ( * set != NULL ) {
+			( * set ) -> size = 1;
+			( * set ) -> capacity = DEFAULT_CAPACITY;
+			( * set ) -> parents = ( int * ) malloc ( DEFAULT_CAPACITY * sizeof ( ( * set ) -> parents ) );
+			( * set ) -> elements = ( int * ) malloc ( DEFAULT_CAPACITY * sizeof ( ( * set ) -> elements ) );
+
+			if ( ( * set ) -> parents != NULL && ( * set ) -> elements != NULL ) {
+				( * set ) -> parents [ 0 ] = 0;
+				( * set ) -> elements [ 0 ] = element;
+				return true;
+			}
+			else {
 				if ( ( * set ) -> parents != NULL ) {
-					for ( int i = 0; i < ( * set ) -> size; i ++ ) {
-						( * set ) -> parents [ i ] = i;
-					}
+					free ( ( * set ) -> parents );
+					( * set ) -> parents = NULL;
+				}
+				else {
+					printf ( "Could not allocate parents\n" );
+				}
+			
+				if ( ( * set ) -> elements != NULL ) {
+					free ( ( * set ) -> elements );
+					( * set ) -> elements = NULL;
+				}
+				else {
+					printf ( "Could not allocate elements\n" );
+				}
+
+				( * set ) -> capacity = 0;
+				( * set ) -> size = 0;
+				free ( * set );
+				( * set ) = NULL;
+				return false;
+			}
+		}
+		else {
+			printf ( "Could not allocate set!\n" );
+			return false;
+		}
+	}
+	else {
+		if ( ( * set ) -> capacity == ( * set ) -> size ) {
+			( * set ) -> capacity *= 2;
+			( * set ) -> elements = ( int * ) realloc ( ( * set ) -> elements, ( * set ) -> capacity * sizeof ( * ( * set ) -> elements ) );	
+			( * set ) -> parents = ( int * ) realloc ( ( * set ) -> parents, ( * set ) -> capacity * sizeof ( * ( * set ) -> parents ) );	
+			
+			if ( ( * set ) -> parents != NULL && ( * set ) -> elements != NULL ) {
+				( * set ) -> size ++;
+				( * set ) -> parents [ ( *set ) -> size - 1 ] = ( *set ) -> size - 1;
+				( * set ) -> elements [ ( *set ) -> size - 1 ] = element;
+				return true;
+			}
+			else {
+				if ( ( * set ) -> parents != NULL && ( * set ) -> elements != NULL ) {
+					( * set ) -> parents [ 0 ] = 0;
+					( * set ) -> elements [ 0 ] = element;
 					return true;
 				}
 				else {
-					printf ( "Could not allocate part of set!\n" );
+					if ( ( * set ) -> parents != NULL ) {
+					free ( ( * set ) -> parents );
+						( * set ) -> parents = NULL;
+					}
+					else {
+						printf ( "Could not allocate parents\n" );
+					}
+			
+					if ( ( * set ) -> elements != NULL ) {
+						free ( ( * set ) -> elements );
+						( * set ) -> elements = NULL;
+					}
+					else {
+						printf ( "Could not allocate elements\n" );
+					}
+	
+					( * set ) -> capacity = 0;
+					( * set ) -> size = 0;
 					free ( * set );
 					( * set ) = NULL;
 					return false;
 				}
 			}
-			else {
-				printf ( "Could not allocate set!\n" );
-				return false;
-			}
-		}
-		else if ( size == 0 ) {
-			return true;
 		}
 		else {
-			printf ( "Invalid set size!\n" );
-			return false;
+			( * set ) -> size ++; 	
+			( * set ) -> parents [ ( *set ) -> size - 1 ] = ( *set ) -> size - 1;
+			( * set ) -> elements [ ( *set ) -> size - 1 ] = element;
+			return true;
 		}
-	}
-	else {
-		printf ( "Set already exists!\n" );
-		return false;
 	}
 }
 
@@ -129,11 +189,13 @@ void freeSet ( DisjointSet * set ) {
 	if ( set != NULL ) {
 		free ( set -> parents );
 		set -> parents = NULL;
+		free ( set -> elements );
+		set -> elements = NULL;
 		set -> size = 0;
+		set -> capacity = 0;
 		free ( & ( * set ) );
 	}
 }
-
 
 // print count of the elements in the disjoint set
 // print parents of elements in given disjoint set
@@ -157,13 +219,15 @@ void printSet ( DisjointSet * set ) {
 
 int main ( ) {
 	DisjointSet * set = NULL;
-       	makeSet ( 6, & set );
+	for ( int i = 0; i < 6; i ++ ) {
+		makeSet ( i, & set );
+	}
 
 	unionSet ( 0, 1, & set );
 	unionSet ( 2, 1, & set );
 	unionSet ( 3, 4, & set );
-        unionSet ( 4, 5, & set );
-        unionSet ( 1, 5, & set );
+      unionSet ( 4, 5, & set );
+      unionSet ( 1, 5, & set );
 
 	for ( int i = 0; i < 6; i ++ ) {
 		int tmp = 0;
