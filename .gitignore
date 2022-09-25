@@ -1,2 +1,11 @@
 # project executive
-project
+basic
+compression
+halving
+rank
+size
+splitting
+
+# meta files
+disjointset.aux
+disjointset.log
