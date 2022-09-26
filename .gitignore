@@ -7,5 +7,8 @@ size
 splitting
 
 # meta files
-disjointset.aux
-disjointset.log
+Thesis/*.aux
+Thesis/*.log
+Thesis/*.aux
+Thesis/*.fdb_latexmk  
+Thesis/*.fls
