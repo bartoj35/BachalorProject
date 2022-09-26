@@ -90,6 +90,6 @@ run_halving: compile_halving
 		./halving
 
 thesis:
-	pdflatex -output-directory Thesis Thesis/disjointset.tex
+	latexmk -pdf -output-directory=Thesis Thesis/disjointset.tex
 
 
