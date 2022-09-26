@@ -20,8 +20,8 @@ typedef struct TDisjointSet {
 // checks if set is not already allocated (would not cause overwriting of address => definite memory loss)
 // param size - count of the elements in future disjoint set
 // param set - pointer to the address of the disjoint set
-// return	- true -> created valid set
-//	 		- false -> could not create set
+// return	- non-negative number -> index of inserted element
+//	 	- -1 -> could not insert element
 bool makeSet ( int element, DisjointSet ** set  ) {
 	if ( ( * set ) == NULL ) {
 		* set = ( DisjointSet * ) malloc ( 1 * sizeof ( DisjointSet ) );
@@ -34,7 +34,7 @@ bool makeSet ( int element, DisjointSet ** set  ) {
 			if ( ( * set ) -> parents != NULL && ( * set ) -> elements != NULL ) {
 				( * set ) -> parents [ 0 ] = 0;
 				( * set ) -> elements [ 0 ] = element;
-				return true;
+				return ( * set ) -> size - 1;
 			}
 			else {
 				if ( ( * set ) -> parents != NULL ) {
@@ -57,12 +57,12 @@ bool makeSet ( int element, DisjointSet ** set  ) {
 				( * set ) -> size = 0;
 				free ( * set );
 				( * set ) = NULL;
-				return false;
+				return -1;
 			}
 		}
 		else {
 			printf ( "Could not allocate set!\n" );
-			return false;
+			return -1;
 		}
 	}
 	else {
@@ -75,13 +75,13 @@ bool makeSet ( int element, DisjointSet ** set  ) {
 				( * set ) -> size ++;
 				( * set ) -> parents [ ( *set ) -> size - 1 ] = ( *set ) -> size - 1;
 				( * set ) -> elements [ ( *set ) -> size - 1 ] = element;
-				return true;
+				return ( * set ) -> size - 1;
 			}
 			else {
 				if ( ( * set ) -> parents != NULL && ( * set ) -> elements != NULL ) {
 					( * set ) -> parents [ 0 ] = 0;
 					( * set ) -> elements [ 0 ] = element;
-					return true;
+					return ( * set ) -> size - 1;
 				}
 				else {
 					if ( ( * set ) -> parents != NULL ) {
@@ -104,7 +104,7 @@ bool makeSet ( int element, DisjointSet ** set  ) {
 					( * set ) -> size = 0;
 					free ( * set );
 					( * set ) = NULL;
-					return false;
+					return -1;
 				}
 			}
 		}
@@ -112,11 +112,10 @@ bool makeSet ( int element, DisjointSet ** set  ) {
 			( * set ) -> size ++; 	
 			( * set ) -> parents [ ( *set ) -> size - 1 ] = ( *set ) -> size - 1;
 			( * set ) -> elements [ ( *set ) -> size - 1 ] = element;
-			return true;
+			return ( * set ) -> size - 1;
 		}
 	}
 }
-
 
 // find the ID of the set to which the element belongs
 // parent of the node is its granparent
