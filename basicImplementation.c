@@ -64,6 +64,7 @@ bool contains ( int element, DisjointSet * set ) {
   @		assumes ( * set ) -> size >= ( * set ) -> capacity; 
   @		requires \freeable { Here } ( ( * set ) -> elements );	
   @		requires \freeable { Here } ( ( * set ) -> parents );	
+  @     requires \forall integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] != element; 
   @	
   @		allocates * set;		
   @		allocates ( * set ) -> elements;		
@@ -90,6 +91,7 @@ bool contains ( int element, DisjointSet * set ) {
   @		assumes ( * set ) -> capacity < ( * set ) -> size; 
   @		requires \freeable { Here } ( ( * set ) -> elements );	
   @		requires \freeable { Here } ( ( * set ) -> parents );	
+  @     requires \forall integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] != element; 
   @
   @		allocates \nothing;
   @
