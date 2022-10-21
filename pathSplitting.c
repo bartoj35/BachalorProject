@@ -17,6 +17,12 @@ typedef struct TDisjointSet {
   @ requires set != \null && \valid ( set );
   @ requires set -> elements != \null && \valid ( set -> elements + ( 0 .. set -> capacity - 1 ) );
   @  
+  @ allocates \nothing;
+  @
+  @ assigns \nothing;
+  @
+  @ frees \nothing;
+  @
   @ ensures \result == \true ==> ( \exists integer index; 0 <= index < set -> size ==> set -> elements [ index ] == element );  
   @ ensures \result == \false ==> ( \forall integer index; 0 <= index < set -> size ==> set -> elements [ index ] != element );  
 @*/
@@ -34,50 +40,73 @@ bool contains ( int element, DisjointSet * set ) {
     return false;
 }
 
+
 /*@
-  @ requires \valid ( set );
+  @	requires \valid ( set );
   @ behavior no_set:
-  @     assumes * set == \null && \allocable { Here } ( * set ); 
-  @     
-  @     allocates * set;        
-  @     allocates ( * set ) -> elements;        
-  @     allocates ( * set ) -> parents;
-  @     
-  @     ensures \result == 0;
-  @     ensures \freeable { Here } ( ( * set ) -> elements );
-  @     ensures \freeable { Here } ( ( * set ) -> parents );
-  @     ensures ( * set ) -> elements [ 0 ] == element;
-  @     ensures ( * set ) -> parents [ 0 ] == 0;
-  @ 
-  @ behavior resize_set:    
-  @     assumes * set != \null && \freeable { Here } ( * set ); 
-  @     requires \freeable { Here } ( ( * set ) -> elements );  
-  @     requires \freeable { Here } ( ( * set ) -> parents );   
-  @ 
-  @     allocates * set;        
-  @     allocates ( * set ) -> elements;        
-  @     allocates ( * set ) -> parents;     
-  @ 
-  @     frees ( * set ) -> elements;        
-  @     frees ( * set ) -> parents;     
-  @ 
-  @     ensures \result == ( * set ) -> size - 1;
-  @     ensures \freeable { Here } ( ( * set ) -> elements );
-  @     ensures \freeable { Here } ( ( * set ) -> parents );
-  @     ensures ( * set ) -> elements [ \old ( ( * set ) -> size ) ] == element;
-  @     ensures ( * set ) -> parents [ \old ( ( * set ) -> size ) ] == \old ( ( * set ) -> size );
-  @ 
-  @ behavior no_resize_set: 
-  @     assumes * set != \null && \freeable { Here } ( * set ); 
-  @     requires \freeable { Here } ( ( * set ) -> elements );  
-  @     requires \freeable { Here } ( ( * set ) -> parents );   
+  @		assumes * set == \null && \allocable { Here } ( * set ); 
+  @		
+  @		allocates * set;		
+  @		allocates ( * set ) -> elements;		
+  @		allocates ( * set ) -> parents;
   @
-  @     ensures \result == ( * set ) -> size - 1;
-  @     ensures \freeable { Here } ( ( * set ) -> elements );
-  @     ensures \freeable { Here } ( ( * set ) -> parents );
-  @     ensures ( * set ) -> elements [ \old ( ( * set ) -> size ) ] == element;
-  @     ensures ( * set ) -> parents [ \old ( ( * set ) -> size ) ] == \old ( ( * set ) -> size );
-  @ 
+  @		assigns * set;		
+  @		
+  @		frees \nothing;		
+  @		
+  @		ensures \result == 0;
+  @		ensures \freeable { Here } ( ( * set ) -> elements );
+  @		ensures \freeable { Here } ( ( * set ) -> parents );
+  @		ensures ( * set ) -> elements [ 0 ] == element;
+  @		ensures ( * set ) -> parents [ 0 ] == 0;
+  @
+  @ behavior resize_set:	
+  @		assumes * set != \null && \freeable { Here } ( * set );
+  @		assumes ( * set ) -> size >= ( * set ) -> capacity; 
+  @		requires \freeable { Here } ( ( * set ) -> elements );	
+  @		requires \freeable { Here } ( ( * set ) -> parents );	
+  @     requires \forall integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] != element; 
+  @	
+  @		allocates * set;		
+  @		allocates ( * set ) -> elements;		
+  @		allocates ( * set ) -> parents;		
+  @	
+  @		assigns ( * set ) -> elements;	
+  @		assigns ( * set ) -> elements [ 0 .. \old ( ( * set ) -> size ) ];	
+  @		assigns ( * set ) -> parents;	
+  @		assigns ( * set ) -> parents [ 0 .. \old ( ( * set ) -> size ) ];	
+  @		assigns ( * set ) -> capacity;	
+  @		assigns ( * set ) -> size;	
+  	
+  @		frees ( * set ) -> elements;		
+  @		frees ( * set ) -> parents;		
+  @	
+  @		ensures \result == \old ( ( * set ) -> size );
+  @		ensures \freeable { Here } ( ( * set ) -> elements );
+  @		ensures \freeable { Here } ( ( * set ) -> parents );
+  @		ensures ( * set ) -> elements [ \old ( ( * set ) -> size ) ] == element;
+  @		ensures ( * set ) -> parents [ \old ( ( * set ) -> size ) ] == \old ( ( * set ) -> size );
+  @	
+  @ behavior no_resize_set:	
+  @		assumes * set != \null && \freeable { Here } ( * set );
+  @		assumes ( * set ) -> capacity < ( * set ) -> size; 
+  @		requires \freeable { Here } ( ( * set ) -> elements );	
+  @		requires \freeable { Here } ( ( * set ) -> parents );	
+  @     requires \forall integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] != element; 
+  @
+  @		allocates \nothing;
+  @
+  @		assigns ( * set ) -> size;
+  @		assigns ( * set ) -> elements [ \old ( ( * set ) -> size ) ];
+  @		assigns ( * set ) -> parents [ \old ( ( * set ) -> size ) ];
+  @
+  @		frees \nothing;
+  @
+  @		ensures \result == \old ( ( * set ) -> size );
+  @		ensures \freeable { Here } ( ( * set ) -> elements );
+  @		ensures \freeable { Here } ( ( * set ) -> parents );
+  @		ensures ( * set ) -> elements [ \old ( ( * set ) -> size ) ] == element;
+  @		ensures ( * set ) -> parents [ \old ( ( * set ) -> size ) ] == \old ( ( * set ) -> size );
   @ // behavior in_set: 
   @     // assumes * set != \null && \freeable { Here } ( * set ); 
   @     // requires \freeable { Here } ( ( * set ) -> elements );   
@@ -95,8 +124,8 @@ int makeSet ( int element, DisjointSet ** set  ) {
         * set = ( DisjointSet * ) malloc ( 1 * sizeof ( DisjointSet ) );
         ( * set ) -> size = 1;
         ( * set ) -> capacity = DEFAULT_CAPACITY;
-        ( * set ) -> elements = ( int * ) malloc ( DEFAULT_CAPACITY * sizeof ( ( * set ) -> elements ) );
-        ( * set ) -> parents = ( int * ) malloc ( DEFAULT_CAPACITY * sizeof ( ( * set ) -> parents ) );
+        ( * set ) -> elements = ( int * ) malloc ( DEFAULT_CAPACITY * sizeof ( * ( * set ) -> elements ) );
+        ( * set ) -> parents = ( int * ) malloc ( DEFAULT_CAPACITY * sizeof ( * ( * set ) -> parents ) );
         ( * set ) -> elements [ 0 ] = element;
         ( * set ) -> parents [ 0 ] = 0;
         return ( * set ) -> size - 1;
@@ -135,6 +164,13 @@ int makeSet ( int element, DisjointSet ** set  ) {
   @ behavior valid:
   @     assumes 0 <= elementIndex < ( * set ) -> size;
   @
+  @     allocates \nothing;
+  @
+  @     assigns * setID;
+  @     assigns ( * set ) -> parents [ 0 .. ( * set ) -> size ];
+  @
+  @     frees \nothing;
+  @
   @     ensures \freeable { Here } ( ( * set ) -> parents );
   @     ensures 0 <= * setID < ( * set ) -> size;
   @     ensures ( * set ) -> parents [ * setID ] == * setID;
@@ -142,6 +178,12 @@ int makeSet ( int element, DisjointSet ** set  ) {
   @
   @ behavior not_valid:
   @     assumes elementIndex < 0 || elementIndex >= ( * set ) -> size;
+  @
+  @     allocates \nothing;
+  @
+  @     assigns \nothing;
+  @
+  @     frees \nothing;
   @ 
   @     ensures \result == \false;
 @*/
@@ -178,10 +220,22 @@ bool find ( int elementIndex, DisjointSet ** set, int * setID ) {
   @     assumes 0 <= elementIndex1 < ( * set ) -> size;
   @     assumes 0 <= elementIndex2 < ( * set ) -> size;
   @
+  @     allocates \nothing;
+  @
+  @     // assigns prvku ktoreho root je najdeny logickou funkciou 
+  @
+  @     frees \nothing;
+  @
   @     ensures \result == true;
   @     // ako checkovat ze su v rovnakom sete?
   @ behavior invalid_index:
   @     assumes ! ( 0 <= elementIndex1 < ( * set ) -> size ) || ! ( 0 <= elementIndex2 < ( * set ) -> size );
+  @
+  @     allocates \nothing;
+  @
+  @     assigns \nothing;
+  @
+  @     frees \nothing;
   @
   @     ensures \result == \false;
   @ 
@@ -216,9 +270,13 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
   @ requires \valid ( set -> parents + ( 0 .. set -> capacity - 1 ) );
   @ requires \valid ( set -> elements + ( 0 .. set -> capacity - 1 ) );
   @
-  @ frees set;
+  @ allocates \nothing;
+  @
+  @ assigns \nothing;
+  @
   @ frees set -> elements;
   @ frees set -> parents;
+  @ frees set;
   @
   @ ensures \allocable { Here } ( set );
   @
@@ -236,8 +294,15 @@ void freeSet ( DisjointSet * set ) {
 
 
 /*@
-    requires \true;
-    ensures \result == 0;
+  @ requires \true;
+  @
+  @ allocates \nothing;
+  @
+  @ assigns \nothing;
+  @
+  @ frees \nothing;
+  @
+  @ ensures \result == 0;
 */
 int main ( void ) {
     DisjointSet * set = NULL;
