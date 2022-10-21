@@ -62,9 +62,9 @@ bool contains ( int element, DisjointSet * set ) {
   @ behavior resize_set:	
   @		assumes * set != \null && \freeable { Here } ( * set );
   @		assumes ( * set ) -> size >= ( * set ) -> capacity; 
+  @     assumes \forall integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] != element; 
   @		requires \freeable { Here } ( ( * set ) -> elements );	
   @		requires \freeable { Here } ( ( * set ) -> parents );	
-  @     requires \forall integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] != element; 
   @	
   @		allocates * set;		
   @		allocates ( * set ) -> elements;		
@@ -89,9 +89,9 @@ bool contains ( int element, DisjointSet * set ) {
   @ behavior no_resize_set:	
   @		assumes * set != \null && \freeable { Here } ( * set );
   @		assumes ( * set ) -> capacity < ( * set ) -> size; 
+  @     assumes \forall integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] != element; 
   @		requires \freeable { Here } ( ( * set ) -> elements );	
   @		requires \freeable { Here } ( ( * set ) -> parents );	
-  @     requires \forall integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] != element; 
   @
   @		allocates \nothing;
   @
@@ -106,15 +106,22 @@ bool contains ( int element, DisjointSet * set ) {
   @		ensures \freeable { Here } ( ( * set ) -> parents );
   @		ensures ( * set ) -> elements [ \old ( ( * set ) -> size ) ] == element;
   @		ensures ( * set ) -> parents [ \old ( ( * set ) -> size ) ] == \old ( ( * set ) -> size );
-  @ // behavior in_set: 
-  @     // assumes * set != \null && \freeable { Here } ( * set ); 
-  @     // requires \freeable { Here } ( ( * set ) -> elements );   
-  @     // requires \freeable { Here } ( ( * set ) -> parents );    
-  @     // requires \exists integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] == element;
+  @  
+  @ behavior in_set:	
+  @		assumes * set != \null && \freeable { Here } ( * set );
+  @     assumes \exists integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] == element; 
+  @		requires \freeable { Here } ( ( * set ) -> elements );	
+  @		requires \freeable { Here } ( ( * set ) -> parents );	
   @
-  @     // ensures \result == - 1;
-  @     // ensures \freeable { Here } ( ( * set ) -> elements );
-  @     // ensures \freeable { Here } ( ( * set ) -> parents );
+  @		allocates \nothing;
+  @
+  @		assigns \nothing;
+  @
+  @		frees \nothing;
+  @
+  @		ensures \result == -1;
+  @		ensures \freeable { Here } ( ( * set ) -> elements );
+  @		ensures \freeable { Here } ( ( * set ) -> parents );
   @ 
   @ complete behaviors; 
 */
@@ -321,6 +328,7 @@ int main ( void ) {
     makeSet ( 3, & set );
     makeSet ( 4, & set );
     makeSet ( 5, & set );
+    makeSet ( 6, & set );
     makeSet ( 6, & set );
     
 	int value = 0;

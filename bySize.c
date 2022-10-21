@@ -120,15 +120,24 @@ bool contains ( int element, DisjointSet * set ) {
   @		ensures ( * set ) -> elements [ \old ( ( * set ) -> size ) ] == element;
   @		ensures ( * set ) -> parents [ \old ( ( * set ) -> size ) ] == \old ( ( * set ) -> size );
   @		ensures ( * set ) -> sizes [ \old ( ( * set ) -> size ) ] == 1; 
-  @ // behavior in_set: 
-  @     // assumes * set != \null && \freeable { Here } ( * set ); 
-  @     // requires \freeable { Here } ( ( * set ) -> elements );   
-  @     // requires \freeable { Here } ( ( * set ) -> parents );    
-  @     // requires \exists integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] == element;
   @
-  @     // ensures \result == - 1;
-  @     // ensures \freeable { Here } ( ( * set ) -> elements );
-  @     // ensures \freeable { Here } ( ( * set ) -> parents );
+  @ behavior in_set:	
+  @		assumes * set != \null && \freeable { Here } ( * set );
+  @     assumes \exists integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] == element; 
+  @		requires \freeable { Here } ( ( * set ) -> elements );	
+  @		requires \freeable { Here } ( ( * set ) -> parents );	
+  @		requires \freeable { Here } ( ( * set ) -> sizes );	
+  @
+  @		allocates \nothing;
+  @
+  @		assigns \nothing;
+  @
+  @		frees \nothing;
+  @
+  @		ensures \result == -1;
+  @		ensures \freeable { Here } ( ( * set ) -> elements );
+  @		ensures \freeable { Here } ( ( * set ) -> parents );
+  @		ensures \freeable { Here } ( ( * set ) -> sizes );
   @ 
   @ complete behaviors; 
 */
@@ -364,6 +373,7 @@ int main ( ) {
     makeSet ( 3, & set );
     makeSet ( 4, & set );
     makeSet ( 5, & set );
+    makeSet ( 6, & set );
     makeSet ( 6, & set );
 
     int value = 0;
