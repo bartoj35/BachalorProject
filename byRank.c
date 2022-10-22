@@ -27,6 +27,8 @@ typedef struct TDisjointSet {
 /*@ predicate valid_parts { L1 } ( DisjointSet * ds ) =
 		( ds != \null && \valid ( ds ) ) ==>
   		(
+            ds -> size >= 1 &&
+            ds -> capacity >= 1 && ds -> capacity >= ds -> size &&
   			ds -> elements != \null && \valid ( ds -> elements + ( 0 .. ds -> capacity - 1 ) ) &&
 			ds -> parents != \null && \valid ( ds -> parents + ( 0 .. ds -> capacity - 1 ) ) &&
 			ds -> ranks != \null && \valid ( ds -> ranks + ( 0 .. ds -> capacity - 1 ) )
@@ -288,6 +290,7 @@ bool swap ( int * first, int * second ) {
 }
 
 /*@
+  @ requires set != \null && \valid ( set );
   @	requires freeable_set ( * set );
   @	requires valid_parts ( * set );
   @ requires valid_ranks ( * set );
