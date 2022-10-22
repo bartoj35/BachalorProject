@@ -217,10 +217,10 @@ bool find ( int elementIndex, DisjointSet ** set, int * setID ) {
 	if ( elementIndex >= 0 && elementIndex < ( * set ) -> size ) {
 		* setID = elementIndex;
 		
-		//@ ghost int maxToProcess = set -> size;
+		//@ ghost int maxToProcess = ( * set ) -> size;
         /*@
           @ loop invariant ( * setID ) >= 0;
-          @ loop invariant ( * setID ) < set -> size;
+          @ loop invariant ( * setID ) < ( * set ) -> size;
           @ loop assigns * setID;
           @ loop variant maxToProcess; 
         @*/
@@ -333,24 +333,58 @@ void freeSet ( DisjointSet * set ) {
   @ ensures \result == 0;
 */
 int main ( void ) {
-    DisjointSet * set = NULL;
+	DisjointSet * set = NULL;
+	// test adding new element
     makeSet ( 1, & set );
+
+	// test adding new element with capacity
     makeSet ( 2, & set );
+
+	// test adding new element with resize
     makeSet ( 3, & set );
     makeSet ( 4, & set );
     makeSet ( 5, & set );
     makeSet ( 6, & set );
-    // makeSet ( 6, & set );
 
-    int value = 0;
-    find ( 1, & set, & value );
-    find ( -333, & set, & value );
-    find ( 10, & set, & value );
+    // test adding element that is already in set
+ 	makeSet ( 6, & set );
+	
+	int value = 0;
+	// find element on valid index
+	find ( 1, & set, & value );
+	
+	// find element on negative index
+	find ( -333, & set, & value );
+	
+	// find element on too large index
+	find ( 10, & set, & value );
 
-    unionSet ( 1, 2, & set );
-    unionSet ( 0, 2, & set );
+	// test union	
+	unionSet ( 0, 1, & set );
+	unionSet ( 1, 2, & set );
+	unionSet ( 0, 2, & set );
+	
+	// find with compression
+	find ( 2, & set, & value );
 
-    freeSet ( set );
-    //@ assert 0 == 1;
+	// test union of same sets
+	unionSet ( 0, 0, & set );
+	
+	// test union negative left set index
+	unionSet ( -1, 0, & set );
+	
+	// test union too large left set index
+	unionSet ( 10, 0, & set );
+	
+	// test union negative right set index
+	unionSet ( 0, -1, & set );
+
+	// test union too large left set index
+	unionSet ( 0, 10, & set );
+	
+	// test free
+	freeSet ( set );
+	//@ assert 0 == 1;
 	return 0;
 }
+

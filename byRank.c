@@ -13,7 +13,7 @@ typedef struct TDisjointSet {
 	int 	size;
 } DisjointSet;
 
-//@ predicate valid_ranks ( DisjointSet * ds ) = ds != \null ==> \forall integer index; 0 <= index < ds -> size ==> ds -> ranks [ index ] <= ds -> ranks [ ds -> parents [ index ] ];
+//@ predicate valid_ranks ( DisjointSet * ds ) = ( ds != \null && \valid ( ds ) ) ==> \forall integer index; 0 <= index < ds -> size ==> ds -> ranks [ index ] <= ds -> ranks [ ds -> parents [ index ] ];
 
 /*@ predicate freeable_set { L1 } ( DisjointSet * ds ) =
 		( ds != \null && \valid ( ds ) ) ==>
@@ -247,7 +247,7 @@ bool find ( int elementIndex, DisjointSet * set, int * setID ) {
         /*@
       	  @ loop invariant 0 <= * setID < set -> size;
       	  @ loop assigns * setID;
-      	  @ loop variant set -> ranks [ * setID ];
+      	  @ loop variant set -> size - set -> ranks [ * setID ];
     	@*/
 		while ( ( * setID ) != set -> parents [ * setID ] ) {
             * setID = set -> parents [ * setID ];
@@ -403,27 +403,64 @@ void freeSet ( DisjointSet * set ) {
 */
 int main ( void ) {
 	DisjointSet * set = NULL;
+	// test adding new element
     makeSet ( 1, & set );
+
+	// test adding new element with capacity
     makeSet ( 2, & set );
+
+	// test adding new element with resize
     makeSet ( 3, & set );
     makeSet ( 4, & set );
     makeSet ( 5, & set );
     makeSet ( 6, & set );
-    // makeSet ( 6, & set );
 
+    // test adding element that is already in set
+ 	makeSet ( 6, & set );
+	
 	int value = 0;
-    find ( 1, set, & value );
-    find ( -333, set, & value );
-    find ( 10, set, & value );    
+	// find element on valid index
+	find ( 1, set, & value );
+	
+	// find element on negative index
+	find ( -333, set, & value );
+	
+	// find element on too large index
+	find ( 10, set, & value );
 
-	unionSet ( 0, 1, & set ); 
-	unionSet ( 1, 2, & set ); 
-    find ( 2, set, & value );
-	unionSet ( 3, 4, & set ); 
-	unionSet ( 4, 5, & set ); 
-	unionSet ( 1, 5, & set ); 
+	// test union	
+	unionSet ( 0, 1, & set );
+	unionSet ( 2, 3, & set );
+	unionSet ( 1, 3, & set );
+	
+	// test union of larger set to smaller
+	unionSet ( 0, 5, & set );
+	
 
+	// test union of same sets
+	unionSet ( 0, 0, & set );
+	
+	// test union negative left set index
+	unionSet ( -1, 0, & set );
+	
+	// test union too large left set index
+	unionSet ( 10, 0, & set );
+	
+	// test union negative right set index
+	unionSet ( 0, -1, & set );
+
+	// test union too large left set index
+	unionSet ( 0, 10, & set );
+
+	// test swap
+   	int a = 1, b = 2;
+	swap ( & a, & b );
+	swap ( NULL, & b );
+	swap ( & a, NULL );
+	swap ( NULL, NULL );
+	
+	// test free
 	freeSet ( set );
-	//@ assert 1 == 0;
+	//@ assert 0 == 1;
 	return 0;
 }
