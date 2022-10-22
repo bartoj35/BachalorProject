@@ -244,7 +244,12 @@ int makeSet ( int element, DisjointSet ** set  ) {
 bool find ( int elementIndex, DisjointSet * set, int * setID ) {
     if ( elementIndex >= 0 && elementIndex < set -> size ) {
         * setID = set -> parents [ elementIndex ];
-        while ( ( * setID ) != set -> parents [ * setID ] ) {
+        /*@
+      	  @ loop invariant 0 <= * setID < set -> size;
+      	  @ loop assigns * setID;
+      	  @ loop variant set -> ranks [ * setID ];
+    	@*/
+		while ( ( * setID ) != set -> parents [ * setID ] ) {
             * setID = set -> parents [ * setID ];
         }
         return true;
@@ -412,7 +417,8 @@ int main ( void ) {
     find ( 10, set, & value );    
 
 	unionSet ( 0, 1, & set ); 
-	unionSet ( 2, 1, & set ); 
+	unionSet ( 1, 2, & set ); 
+    find ( 2, set, & value );
 	unionSet ( 3, 4, & set ); 
 	unionSet ( 4, 5, & set ); 
 	unionSet ( 1, 5, & set ); 

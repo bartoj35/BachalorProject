@@ -243,6 +243,11 @@ int makeSet ( int element, DisjointSet ** set  ) {
 bool find ( int elementIndex, DisjointSet * set, int * setID ) {
     if ( elementIndex >= 0 && elementIndex < set -> size ) {
         * setID = set -> parents [ elementIndex ];
+		/*@
+          @ loop invariant 0 <= * setID < set -> size;
+          @ loop assigns * setID;
+          @ loop variant set -> sizes [ * setID ];
+        @*/
         while ( ( * setID ) != set -> parents [ * setID ] ) {
             * setID = set -> parents [ * setID ];
         }
