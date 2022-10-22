@@ -85,21 +85,19 @@ bool contains ( int element, DisjointSet * set ) {
   @		
   @		frees \nothing;		
   @		
-  @		ensures \result == 0;
   @		ensures ( * set ) -> elements [ 0 ] == element;
   @		ensures ( * set ) -> parents [ 0 ] == 0;
   @		ensures ( * set ) -> sizes [ 0 ] == 1;
   @     ensures freeable_set { Here } ( * set );
   @     ensures valid_parts ( * set );
   @     ensures valid_sizes ( * set );
+  @		ensures \result == 0;
   @
   @ behavior resize_set:	
   @		assumes * set != \null && \freeable { Here } ( * set );
   @		assumes ( * set ) -> size >= ( * set ) -> capacity; 
   @ 	assumes \forall integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] != element;
   @
-  @     requires freeable_set { Here } ( * set );
-  @	
   @		allocates * set;		
   @		allocates ( * set ) -> elements;		
   @		allocates ( * set ) -> parents;		
@@ -117,20 +115,18 @@ bool contains ( int element, DisjointSet * set ) {
   @		frees ( * set ) -> elements;		
   @		frees ( * set ) -> parents;		
   @	
-  @		ensures \result == \old ( ( * set ) -> size );
   @		ensures ( * set ) -> elements [ \old ( ( * set ) -> size ) ] == element;
   @		ensures ( * set ) -> parents [ \old ( ( * set ) -> size ) ] == \old ( ( * set ) -> size );
   @		ensures ( * set ) -> sizes [ \old ( ( * set ) -> size ) ] == 1; 
   @     ensures freeable_set { Here } ( * set );
   @     ensures valid_parts ( * set );
   @     ensures valid_sizes ( * set );
+  @		ensures \result == \old ( ( * set ) -> size );
   @	
   @ behavior no_resize_set:	
   @		assumes * set != \null && \freeable { Here } ( * set );
   @		assumes ( * set ) -> capacity < ( * set ) -> size; 		
   @ 	assumes \forall integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] != element;
-  @
-  @     requires freeable_set { Here } ( * set );
   @
   @		allocates \nothing;
   @
@@ -141,19 +137,17 @@ bool contains ( int element, DisjointSet * set ) {
   @
   @		frees \nothing;
   @
-  @		ensures \result == \old ( ( * set ) -> size );
   @		ensures ( * set ) -> elements [ \old ( ( * set ) -> size ) ] == element;
   @		ensures ( * set ) -> parents [ \old ( ( * set ) -> size ) ] == \old ( ( * set ) -> size );
   @		ensures ( * set ) -> sizes [ \old ( ( * set ) -> size ) ] == 1; 
   @     ensures freeable_set { Here } ( * set );
   @     ensures valid_parts ( * set );
   @     ensures valid_sizes ( * set );
+  @		ensures \result == \old ( ( * set ) -> size );
   @
   @ behavior in_set:	
   @		assumes * set != \null && \freeable { Here } ( * set );
   @     assumes \exists integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] == element; 
-  @
-  @     requires freeable_set { Here } ( * set );
   @
   @		allocates \nothing;
   @
@@ -161,10 +155,10 @@ bool contains ( int element, DisjointSet * set ) {
   @
   @		frees \nothing;
   @
-  @		ensures \result == -1;
   @     ensures freeable_set { Here } ( * set );
   @     ensures valid_parts ( * set );
   @     ensures valid_sizes ( * set );
+  @		ensures \result == -1;
   @ 
   @ complete behaviors; 
 */
@@ -312,6 +306,7 @@ bool swap ( int * first, int * second ) {
   @ 	ensures valid_parts ( * set );
   @ 	ensures valid_sizes ( * set );
   @     ensures \result == true;
+  @
   @ behavior invalid_index:
   @     assumes ! ( 0 <= elementIndex1 < ( * set ) -> size ) || ! ( 0 <= elementIndex2 < ( * set ) -> size );
   @

@@ -76,11 +76,11 @@ bool contains ( int element, DisjointSet * set ) {
   @		
   @		frees \nothing;		
   @		
-  @		ensures \result == 0;
   @		ensures ( * set ) -> elements [ 0 ] == element;
   @		ensures ( * set ) -> parents [ 0 ] == 0;
   @     ensures freeable_set { Here } ( * set );
   @     ensures valid_parts ( * set );
+  @		ensures \result == 0;
   @
   @ behavior resize_set:	
   @		assumes * set != \null && \freeable { Here } ( * set );
@@ -101,11 +101,11 @@ bool contains ( int element, DisjointSet * set ) {
   @		frees ( * set ) -> elements;		
   @		frees ( * set ) -> parents;		
   @	
-  @		ensures \result == \old ( ( * set ) -> size );
   @		ensures ( * set ) -> elements [ \old ( ( * set ) -> size ) ] == element;
   @		ensures ( * set ) -> parents [ \old ( ( * set ) -> size ) ] == \old ( ( * set ) -> size );
   @     ensures freeable_set { Here } ( * set );
   @     ensures valid_parts ( * set );
+  @		ensures \result == \old ( ( * set ) -> size );
 	
   @ behavior no_resize_set:	
   @		assumes * set != \null && \freeable { Here } ( * set );
@@ -120,9 +120,9 @@ bool contains ( int element, DisjointSet * set ) {
   @
   @		frees \nothing;
   @
-  @		ensures \result == \old ( ( * set ) -> size );
   @     ensures freeable_set { Here } ( * set );
   @     ensures valid_parts ( * set );
+  @		ensures \result == \old ( ( * set ) -> size );
   @  
   @ behavior in_set:	
   @		assumes * set != \null && \freeable { Here } ( * set );
@@ -134,9 +134,9 @@ bool contains ( int element, DisjointSet * set ) {
   @
   @		frees \nothing;
   @
-  @		ensures \result == -1;
   @     ensures freeable_set { Here } ( * set );
   @     ensures valid_parts ( * set );
+  @		ensures \result == -1;
   @ 
   @ complete behaviors; 
 */
@@ -259,6 +259,7 @@ bool find ( int elementIndex, DisjointSet ** set, int * setID ) {
   @     ensures freeable_set ( * set );
   @     ensures valid_parts ( * set );
   @     ensures \result == true;
+  @
   @ behavior invalid_index:
   @     assumes ! ( 0 <= elementIndex1 < ( * set ) -> size ) || ! ( 0 <= elementIndex2 < ( * set ) -> size );
   @
