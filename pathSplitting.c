@@ -13,7 +13,7 @@ typedef struct TDisjointSet {
 	int 	size;
 } DisjointSet;
 
-/*@ predicate ereeable_set { L1 } ( DisjointSet * ds ) =
+/*@ predicate freeable_set { L1 } ( DisjointSet * ds ) =
         ( ds != \null && \valid ( ds ) ) ==>
         (
             \freeable { L1 } ( ds -> elements ) &&
@@ -217,16 +217,18 @@ bool find ( int elementIndex, DisjointSet ** set, int * setID ) {
 	if ( elementIndex >= 0 && elementIndex < ( * set ) -> size ) {
 		* setID = elementIndex;
 		
-		/*@
+		//@ ghost int maxToProcess = set -> size;
+        /*@
           @ loop invariant ( * setID ) >= 0;
-          @ loop invariant ( * setID ) < ( * set ) -> size;
-          @ loop assigns elementIndex;
-          @ loop assigns ( * set ) -> parents [ \at ( elementIndex, LoopCurrent ) ];
+          @ loop invariant ( * setID ) < set -> size;
+          @ loop assigns * setID;
+          @ loop variant maxToProcess; 
         @*/
 		while ( ( * setID ) != ( * set ) -> parents [ * setID ] ) {
 			int tmp = * setID;
 			* setID = ( * set ) -> parents [ * setID ];
 			( * set ) -> parents [ tmp ] = ( * set ) -> parents [ * setID ];  
+		    //@ ghost maxToProcess = maxToProcess - 1;
 		}
 
 		return true;

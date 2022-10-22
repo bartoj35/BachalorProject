@@ -212,26 +212,31 @@ int makeSet ( int element, DisjointSet ** set  ) {
 bool find ( int elementIndex, DisjointSet ** set, int * setID ) {
 	if ( elementIndex >= 0 && elementIndex < ( * set ) -> size ) {
 		* setID = ( * set ) -> parents [ elementIndex ];
-	
-		/*@
-		  @ loop invariant ( * setID ) >= 0;
-		  @ loop invariant ( * setID ) < ( * set ) -> size;
-		  @ loop assigns * setID;
-  		@*/	
+
+        //@ ghost int maxToProcess = set -> size;
+        /*@
+          @ loop invariant ( * setID ) >= 0;
+          @ loop invariant ( * setID ) < set -> size;
+          @ loop assigns * setID;
+          @ loop variant maxToProcess; 
+        @*/
 		while ( ( * setID ) != ( * set ) -> parents [ * setID ] ) {
 			* setID = ( * set ) -> parents [ * setID ];
 		}
 
-		/*@
-		  @ loop invariant ( * setID ) >= 0;
-		  @ loop invariant ( * setID ) < ( * set ) -> size;
+        //@ ghost int maxToProcess = set -> size;
+        /*@
+          @ loop invariant ( * setID ) >= 0;
+          @ loop invariant ( * setID ) < set -> size;
 		  @ loop assigns elementIndex;
 		  @ loop assigns ( * set ) -> parents [ \at ( elementIndex, LoopCurrent ) ];
+          @ loop variant maxToProcess; 
   		@*/
 		while ( ( * set ) -> parents [ elementIndex ] != ( * setID ) ) {
 			int tmp = ( * set ) -> parents [ elementIndex ];
 			( * set ) -> parents [ elementIndex ] = ( * setID );
 			elementIndex = tmp;
+            //@ ghost maxToProcess = maxToProcess - 1;
 		}
 		
 		return true;
