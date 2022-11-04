@@ -36,7 +36,7 @@ typedef struct TDisjointSet {
 */
 
 /*@
-  @ requires freeable_set ( set );
+  @ requires freeable_set { Here } ( set );
   @ requires valid_parts ( set );
   @ requires valid_sizes ( set );
   @  
@@ -46,7 +46,7 @@ typedef struct TDisjointSet {
   @
   @ frees \nothing;
   @
-  @ ensures freeable_set ( set );
+  @ ensures freeable_set { Here } ( set );
   @ ensures valid_parts ( set );
   @ ensures valid_sizes ( set );
   @ ensures \result == \true ==> ( \exists integer index; 0 <= index < set -> size ==> set -> elements [ index ] == element );  
@@ -69,7 +69,7 @@ bool contains ( int element, DisjointSet * set ) {
 
 /*@
   @ requires set != \null && \valid ( set );
-  @ requires freeable_set ( * set );
+  @ requires freeable_set { Here } ( * set );
   @ requires valid_parts ( * set );
   @ requires valid_sizes ( * set );
   @

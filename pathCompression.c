@@ -31,7 +31,7 @@ typedef struct TDisjointSet {
 */
 
 /*@
-  @ requires freeable_set ( set );
+  @ requires freeable_set { Here } ( set );
   @ requires valid_parts ( set );
   @  
   @ allocates \nothing;
@@ -40,7 +40,7 @@ typedef struct TDisjointSet {
   @
   @ frees \nothing;
   @
-  @ ensures freeable_set ( set );
+  @ ensures freeable_set { Here } ( set );
   @ ensures valid_parts ( set );
   @ ensures \result == \true ==> \exists integer index; 0 <= index < set -> size ==> set -> elements [ index ] == element;  
   @ ensures \result == \false ==> \forall integer index; 0 <= index < set -> size ==> set -> elements [ index ] != element;  
@@ -62,7 +62,7 @@ bool contains ( int element, DisjointSet * set ) {
 
 /*@
   @ requires set != \null && \valid ( set );
-  @ requires freeable_set ( * set );
+  @ requires freeable_set { Here } ( * set );
   @ requires valid_parts ( * set );
   @	
   @ behavior no_set:
@@ -178,7 +178,7 @@ int makeSet ( int element, DisjointSet ** set  ) {
 
 /*@
   @ requires set != \null && \valid ( set );
-  @ requires freeable_set ( * set );
+  @ requires freeable_set { Here } ( * set );
   @ requires valid_parts ( * set );
   @
   @ behavior valid:
@@ -251,7 +251,7 @@ bool find ( int elementIndex, DisjointSet ** set, int * setID ) {
 
 /*@
   @ requires set != \null && \valid ( set );
-  @ requires freeable_set ( * set );
+  @ requires freeable_set { Here } ( * set );
   @ requires valid_parts ( * set );
   @
   @ behavior valid:
@@ -262,7 +262,7 @@ bool find ( int elementIndex, DisjointSet ** set, int * setID ) {
   @
   @     frees \nothing;
   @
-  @     ensures freeable_set ( * set );
+  @     ensures freeable_set { Here } ( * set );
   @     ensures valid_parts ( * set );
   @     ensures \result == true;
   @
@@ -275,7 +275,7 @@ bool find ( int elementIndex, DisjointSet ** set, int * setID ) {
   @
   @     frees \nothing;
   @
-  @     ensures freeable_set ( * set );
+  @     ensures freeable_set { Here } ( * set );
   @     ensures valid_parts ( * set );
   @     ensures \result == \false;
   @ 
@@ -307,7 +307,7 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
 }
 
 /*@
-  @ requires freeable_set ( set );
+  @ requires freeable_set { Here } ( set );
   @ requires valid_parts ( set );
   @
   @ allocates \nothing;

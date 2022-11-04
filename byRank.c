@@ -37,7 +37,7 @@ typedef struct TDisjointSet {
 
 
 /*@
-  @ requires freeable_set ( set );
+  @ requires freeable_set { Here } ( set );
   @ requires valid_parts ( set );
   @	requires valid_ranks ( set );
   @  
@@ -47,7 +47,7 @@ typedef struct TDisjointSet {
   @
   @ frees \nothing;
   @
-  @	ensures freeable_set ( set );
+  @	ensures freeable_set { Here } ( set );
   @	ensures valid_parts ( set );
   @	ensures valid_ranks ( set );
   @ ensures \result == \true ==> \exists integer index; 0 <= index < set -> size ==> set -> elements [ index ] == element;
@@ -70,7 +70,7 @@ bool contains ( int element, DisjointSet * set ) {
 
 /*@
   @ requires set != \null && \valid ( set );
-  @ requires freeable_set ( * set );
+  @ requires freeable_set { Here } ( * set );
   @ requires valid_parts ( * set );
   @	requires valid_ranks ( * set );
   @
@@ -206,7 +206,7 @@ int makeSet ( int element, DisjointSet ** set  ) {
 
 
 /*@
-  @ requires freeable_set ( set );
+  @ requires freeable_set { Here } ( set );
   @	requires valid_parts ( set );
   @ requires valid_ranks ( set );
   @
@@ -296,7 +296,7 @@ bool swap ( int * first, int * second ) {
 
 /*@
   @ requires set != \null && \valid ( set );
-  @	requires freeable_set ( * set );
+  @	requires freeable_set { Here } ( * set );
   @	requires valid_parts ( * set );
   @ requires valid_ranks ( * set );
   @
@@ -310,7 +310,7 @@ bool swap ( int * first, int * second ) {
   @
   @     frees \nothing;
   @
-  @		ensures freeable_set ( * set );
+  @		ensures freeable_set { Here } ( * set );
   @		ensures valid_parts ( * set );
   @ 	ensures valid_ranks ( * set );
   @     ensures \result == true;
@@ -324,7 +324,7 @@ bool swap ( int * first, int * second ) {
   @
   @     frees \nothing;
   @
-  @		ensures freeable_set ( * set );
+  @		ensures freeable_set { Here } ( * set );
   @		ensures valid_parts ( * set );
   @ 	ensures valid_ranks ( * set );
   @     ensures \result == \false;
@@ -363,7 +363,7 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
 }
 
 /*@
-  @ requires freeable_set ( set );
+  @ requires freeable_set { Here } ( set );
   @ requires valid_parts ( set );
   @ requires valid_ranks ( set );
   @
