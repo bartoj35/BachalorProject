@@ -30,6 +30,18 @@ typedef struct TDisjointSet {
   @     );      
 */
 
+/*@ logic integer find { L1 } ( DisjointSet * ds, integer i ) = ( i == ds -> parents [ i ] ) ? i : find ( ds, ds -> parents [ i ] );
+  @
+  @ predicate correctly_unioned { L1, L2 } ( DisjointSet * ds, integer element1, integer element2 ) =
+  @     \forall integer i; 0 <= i < \at ( ds -> size, L2 ) ==> 
+  @     (
+  @         ( ( find { L1 } ( ds, i ) != find { L1 } ( ds, element1 ) && find { L1 } ( ds, i ) != find { L1 } ( ds, element2 ) ) ==> find { L1 } ( ds, i ) == find { L2 } ( ds, i ) ) 
+  @         ||
+  @         ( find { L2 } ( ds, i ) == find { L2 } ( ds, element1 ) && find { L2 } ( ds, i ) == find { L2 } ( ds, element2 ) )
+  @     );
+*/
+
+
 /*@
   @ requires freeable_set { Here } ( set );
   @ requires valid_parts ( set );
@@ -191,6 +203,7 @@ int makeSet ( int element, DisjointSet ** set  ) {
   @		frees \nothing;
   @
   @		ensures 0 <= * setID < set -> size;
+  @		ensures * setID == find ( set, elementIndex );
   @		ensures set -> parents [ * setID ] == * setID;
   @     ensures freeable_set { Here } ( set );
   @     ensures valid_parts ( set );
@@ -246,7 +259,7 @@ bool find ( int elementIndex, DisjointSet * set, int * setID ) {
   @
   @		frees \nothing;
   @
-  @     // ensures correctly_unioned ( * set, elementIndex1, elementIndex2 );
+  @     ensures correctly_unioned { Pre, Here } ( * set, elementIndex1, elementIndex2 );
   @     ensures freeable_set { Here } ( * set );
   @     ensures valid_parts ( * set );
   @		ensures \result == true;
