@@ -21,7 +21,7 @@ typedef struct TDisjointSet {
         );
 */
 
-/*@ predicate valid_parts { L1 } ( DisjointSet * ds ) =
+/*@ predicate valid_parts ( DisjointSet * ds ) =
         ( ds != \null && \valid ( ds ) ) ==>
         (
             ds -> size >= 1 &&
