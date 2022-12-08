@@ -30,21 +30,23 @@ typedef struct TDisjointSet {
   @     );      
 */
 
-/*@ logic integer find { L1 } ( DisjointSet * ds, integer i ) = ( i == ds -> parents [ i ] ) ? i : find ( ds, ds -> parents [ i ] );
+/*@ logic integer find { L1 } ( DisjointSet * ds, integer i, integer length ) = ( ( length >= ds -> size ) ? -1 : ( i == ds -> parents [ i ] ) ? i : find ( ds, ds -> parents [ i ], length + 1 ) );
   @
   @ predicate correctly_unioned { L1, L2 } ( DisjointSet * ds, integer element1, integer element2 ) =
   @     \forall integer i; 0 <= i < \at ( ds -> size, L2 ) ==> 
   @     (
-  @         ( ( find { L1 } ( ds, i ) != find { L1 } ( ds, element1 ) && find { L1 } ( ds, i ) != find { L1 } ( ds, element2 ) ) ==> find { L1 } ( ds, i ) == find { L2 } ( ds, i ) ) 
+  @         ( ( find { L1 } ( ds, i, 0 ) != find { L1 } ( ds, element1, 0 ) && find { L1 } ( ds, i, 0 ) != find { L1 } ( ds, element2, 0 ) ) ==> find { L1 } ( ds, i, 0 ) == find { L2 } ( ds, i, 0 ) ) 
   @         ||
-  @         ( find { L2 } ( ds, i ) == find { L2 } ( ds, element1 ) && find { L2 } ( ds, i ) == find { L2 } ( ds, element2 ) )
+  @         ( find { L1 } ( ds, i, 0 ) == find { L1 } ( ds, element1, 0 ) && find { L2 } ( ds, i, 0 ) == find { L2 } ( ds, element2, 0 ) )
   @     );
+  @
+  @ predicate is_acyclic { L1 } ( DisjointSet * ds ) = ds == \null || ! \valid ( ds ) || \forall integer i; 0 <= i < \at ( ds -> size, L1 ) ==> find ( ds, i, 0 ) != -1;
 */
-
 
 /*@
   @ requires freeable_set { Here } ( set );
   @ requires valid_parts ( set );
+  @ requires is_acyclic ( set );
   @  
   @ allocates \nothing;
   @
@@ -75,6 +77,7 @@ bool contains ( int element, DisjointSet * set ) {
   @ requires set != \null && \valid ( set );
   @ requires freeable_set { Here } ( * set );
   @ requires valid_parts ( * set );
+  @ requires is_acyclic ( * set );
   @
   @ behavior no_set:
   @		assumes * set == \null && \allocable { Here } ( * set ); 
@@ -91,6 +94,7 @@ bool contains ( int element, DisjointSet * set ) {
   @		ensures ( * set ) -> parents [ 0 ] == 0;
   @     ensures freeable_set { Here } ( * set );
   @     ensures valid_parts ( * set );
+  @		ensures is_acyclic ( * set );
   @		ensures \result == 0;
   @
   @ behavior resize_set:	
@@ -116,6 +120,7 @@ bool contains ( int element, DisjointSet * set ) {
   @		ensures ( * set ) -> parents [ \old ( ( * set ) -> size ) ] == \old ( ( * set ) -> size );
   @     ensures freeable_set { Here } ( * set );
   @     ensures valid_parts ( * set );
+  @		ensures is_acyclic ( * set );
   @		ensures \result == \old ( ( * set ) -> size );
   @	
   @ behavior no_resize_set:	
@@ -135,6 +140,7 @@ bool contains ( int element, DisjointSet * set ) {
   @		ensures ( * set ) -> parents [ \old ( ( * set ) -> size ) ] == \old ( ( * set ) -> size );
   @     ensures freeable_set { Here } ( * set );
   @     ensures valid_parts ( * set );
+  @		ensures is_acyclic ( * set );
   @		ensures \result == \old ( ( * set ) -> size );
   @
   @ behavior in_set:	
@@ -149,6 +155,7 @@ bool contains ( int element, DisjointSet * set ) {
   @
   @     ensures freeable_set { Here } ( * set );
   @     ensures valid_parts ( * set );
+  @		ensures is_acyclic ( * set );
   @		ensures \result == -1;
   @ 
   @ complete behaviors; 
@@ -192,6 +199,7 @@ int makeSet ( int element, DisjointSet ** set  ) {
 /*@
   @ requires freeable_set { Here } ( set );
   @ requires valid_parts ( set );
+  @ requires is_acyclic ( set );
   @
   @ behavior valid:
   @		assumes 0 <= elementIndex < set -> size;
@@ -203,10 +211,11 @@ int makeSet ( int element, DisjointSet ** set  ) {
   @		frees \nothing;
   @
   @		ensures 0 <= * setID < set -> size;
-  @		ensures * setID == find ( set, elementIndex );
+  @		ensures * setID == find ( set, elementIndex, 0 );
   @		ensures set -> parents [ * setID ] == * setID;
   @     ensures freeable_set { Here } ( set );
   @     ensures valid_parts ( set );
+  @     ensures is_acyclic ( set );
   @		ensures \result == \true;
   @
   @ behavior not_valid:
@@ -220,6 +229,7 @@ int makeSet ( int element, DisjointSet ** set  ) {
   @
   @     ensures freeable_set { Here } ( set );
   @     ensures valid_parts ( set );
+  @     ensures is_acyclic ( set );
   @		ensures \result == \false;
 @*/
 bool find ( int elementIndex, DisjointSet * set, int * setID ) {
@@ -250,6 +260,7 @@ bool find ( int elementIndex, DisjointSet * set, int * setID ) {
   @ requires set != \null && \valid ( set );  
   @ requires freeable_set { Here } ( * set );
   @ requires valid_parts ( * set );
+  @ requires is_acyclic ( * set );
   @
   @	behavior valid:
   @		assumes 0 <= elementIndex1 < ( * set ) -> size;
@@ -262,6 +273,7 @@ bool find ( int elementIndex, DisjointSet * set, int * setID ) {
   @     ensures correctly_unioned { Pre, Here } ( * set, elementIndex1, elementIndex2 );
   @     ensures freeable_set { Here } ( * set );
   @     ensures valid_parts ( * set );
+  @     ensures is_acyclic ( * set );
   @		ensures \result == true;
   @
   @	behavior invalid_index:
@@ -275,6 +287,7 @@ bool find ( int elementIndex, DisjointSet * set, int * setID ) {
   @
   @     ensures freeable_set { Here } ( * set );
   @     ensures valid_parts ( * set );
+  @     ensures is_acyclic ( * set );
   @		ensures \result == \false;
   @ 
   @ disjoint behaviors; 
@@ -304,6 +317,7 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
 /*@
   @ requires freeable_set { Here } ( set );
   @ requires valid_parts ( set );
+  @ requires is_acyclic ( set );
   @
   @	allocates \nothing;
   @
@@ -325,6 +339,12 @@ void freeSet ( DisjointSet * set ) {
 	set -> capacity = 0;
 	free ( & ( * set ) );
 	set = NULL;
+}
+
+void print ( DisjointSet * set ) {
+	for ( int i = 0; i < set -> size; i ++ ) {
+		printf ( "%d: %d\n", i, set -> parents [ i ] ); 
+	}
 }
 
 /*@
@@ -368,6 +388,11 @@ int main ( void ) {
 	// test union	
 	unionSet ( 0, 1, & set );
 	
+	unionSet ( 1, 2, & set );
+	unionSet ( 3, 0, & set );
+
+	find ( 1, set, & value );
+
 	// test union of same sets
 	unionSet ( 0, 0, & set );
 	
