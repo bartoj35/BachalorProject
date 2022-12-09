@@ -419,6 +419,7 @@ bool swap ( int * first, int * second ) {
   @		ensures valid_parts ( * set );
   @ 	ensures valid_ranks ( * set );
   @ 	ensures is_acyclic { Here } ( * set );
+  @ 	ensures correctly_unioned { Pre, Here } ( * set, elementIndex1, elementIndex2 );
   @ 
   @ disjoint behaviors; 
 @*/
