@@ -12,41 +12,73 @@ typedef struct TDisjointSet {
 	int 	size;
 } DisjointSet;
 
-/*@ predicate freeable_set { L1 } ( DisjointSet * ds ) =
-  @     ( ds != \null && \valid ( ds ) ) ==>
-  @     (
+/*@ predicate freeable_set { L1 } ( DisjointSet * ds ) = ( 
+  @		( 
+  @			ds != \null && 
+  @			\valid ( ds ) 
+  @		) ==> (
   @         \freeable { L1 } ( ds -> elements ) &&
   @         \freeable { L1 } ( ds -> parents )
-  @     );
+  @     )
+  @ );
 */
 
-/*@ predicate valid_parts ( DisjointSet * ds ) =
-  @     ( ds != \null && \valid ( ds ) ) ==>
-  @     (
+/*@ predicate valid_parts ( DisjointSet * ds ) = (
+  @     ( 
+  @			ds != \null && 
+  @			\valid ( ds ) 
+  @		) ==> (
   @     	ds -> size >= 1 &&
   @			ds -> capacity >= 1 && ds -> capacity >= ds -> size &&
   @		    ds -> elements != \null && \valid ( ds -> elements + ( 0 .. ds -> capacity - 1 ) ) &&
   @         ds -> parents != \null && \valid ( ds -> parents + ( 0 .. ds -> capacity - 1 ) )
-  @     );      
+  @     )
+  @ );      
 */
 
-/*@ logic integer find { L1 } ( DisjointSet * ds, integer i, integer length ) = ( ( length >= ds -> size ) ? -1 : ( i == ds -> parents [ i ] ) ? i : find ( ds, ds -> parents [ i ], length + 1 ) );
+/*@ logic integer find { L1 } ( DisjointSet * ds, integer i, integer length ) = (
+  @		( length >= \at ( ds -> size, L1 ) ) 
+  @		? 
+  @		-1 
+  @		: 
+  @		(	
+  @			( i == \at ( ds -> parents [ i ], L1 ) ) 
+  @			? 
+  @			i 
+  @			:
+  @		 	find { L1 } ( ds, ds -> parents [ i ], length + 1 )
+  @		) 
+  @ );
   @
-  @ predicate correctly_unioned { L1, L2 } ( DisjointSet * ds, integer element1, integer element2 ) =
-  @     \forall integer i; 0 <= i < \at ( ds -> size, L2 ) ==> 
-  @     (
-  @         ( ( find { L1 } ( ds, i, 0 ) != find { L1 } ( ds, element1, 0 ) && find { L1 } ( ds, i, 0 ) != find { L1 } ( ds, element2, 0 ) ) ==> find { L1 } ( ds, i, 0 ) == find { L2 } ( ds, i, 0 ) ) 
-  @         ||
-  @         ( find { L1 } ( ds, i, 0 ) == find { L1 } ( ds, element1, 0 ) && find { L2 } ( ds, i, 0 ) == find { L2 } ( ds, element2, 0 ) )
-  @     );
+  @ predicate correctly_unioned { L1, L2 } ( DisjointSet * ds, integer element1, integer element2 ) = (
+  @     \forall integer i; 
+  @			0 <= i < \at ( ds -> size, L2 ) ==> 
+  @     	(
+  @         	( 
+  @					( 
+  @						find { L1 } ( ds, i, 0 ) != find { L1 } (  ds, element1, 0 ) && 
+  @						find { L1 } ( ds, i, 0 ) != find { L1 } ( ds, element2, 0 ) 
+  @					) ==> (
+  @						find { L1 } ( ds, i, 0 ) == find { L2 } ( ds, i, 0 ) 
+  @					)
+  @				) || ( 
+  @					find { L1 } ( ds, i, 0 ) == find { L2 } ( ds, element1, 0 ) && 
+  @					find { L2 } ( ds, i, 0 ) == find { L2 } ( ds, element2, 0 ) 
+  @				)
+  @     	)
+  @ );
   @
-  @ predicate is_acyclic { L1 } ( DisjointSet * ds ) = ds == \null || ! \valid ( ds ) || \forall integer i; 0 <= i < \at ( ds -> size, L1 ) ==> find ( ds, i, 0 ) != -1;
+  @ predicate is_acyclic { L1 } ( DisjointSet * ds ) = (
+  @		ds == \null || 
+  @		! \valid ( ds ) || 
+  @		\forall integer i; 0 <= i < \at ( ds -> size, L1 ) ==> find ( ds, i, 0 ) != -1
+  @ );
 */
 
 /*@
   @ requires freeable_set { Here } ( set );
   @ requires valid_parts ( set );
-  @ requires is_acyclic ( set );
+  @ requires is_acyclic { Here } ( set );
   @  
   @ allocates \nothing;
   @
