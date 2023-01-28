@@ -17,8 +17,6 @@ Framework contains a lot of plugins for various analysis, from generating annota
 
 
 ## TODO
-* Write ACSL annotation comments
-* Fuzzer for generating calls of functions for benchmarks
 * [Flush cache](https://www.tecmint.com/clear-ram-memory-cache-buffer-and-swap-space-on-linux/) before every benchmark
 * Use benchmark utilities
-* Try symbolic execution engine (using some server for that? maybe ICT) (recommendation by [Soptik](https://github.com/SoptikHa2): KLEE, EXE)
+* Try symbolic execution engine overall, but ask about the cluster usage
