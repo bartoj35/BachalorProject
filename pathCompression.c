@@ -366,7 +366,6 @@ bool find ( int elementIndex, DisjointSet ** set, int * setID ) {
   @ disjoint behaviors; 
 @*/
 bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
-	
 	if ( elementIndex1 >= 0 && elementIndex1 < ( * set ) -> size && elementIndex2 >= 0 && elementIndex2 < ( * set ) -> size ) {
 		int firstParent = 0, secondParent = 0;
 		find ( elementIndex1, set, & firstParent );
@@ -376,7 +375,7 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
 			return true;
 		}
 
-		( * set ) -> parents [ secondParent ] = firstParent;
+		( * set ) -> parents [ secondParent ] = elementIndex1;
 		return true;
 	}
 	

@@ -43,7 +43,7 @@ typedef struct TDisjointSet {
   @			\valid ( ds )  
   @		) ==> ( 
   @			ds -> size >= 1 &&
-  @         ds -> capacity >= 1 && ds -> capacity >= ds -> size &&
+  @     ds -> capacity >= 1 && ds -> capacity >= ds -> size &&
   @			ds -> elements != \null && \valid ( ds -> elements + ( 0 .. ds -> capacity - 1 ) ) &&
   @			ds -> parents != \null && \valid ( ds -> parents + ( 0 .. ds -> capacity - 1 ) ) &&
   @			ds -> ranks != \null && \valid ( ds -> ranks + ( 0 .. ds -> capacity - 1 ) )
@@ -57,30 +57,30 @@ typedef struct TDisjointSet {
   @     -1 
   @     : 
   @     (   
-  @         ( i == \at ( ds -> parents [ i ], L1 ) ) 
-  @         ? 
-  @         i 
-  @         :
-  @         find { L1 } ( ds, ds -> parents [ i ], length + 1 )
+  @     ( i == \at ( ds -> parents [ i ], L1 ) ) 
+  @     ? 
+  @     i 
+  @     :
+  @     find { L1 } ( ds, ds -> parents [ i ], length + 1 )
   @     ) 
   @ );
   @
   @ predicate correctly_unioned { L1, L2 } ( DisjointSet * ds, integer element1, integer element2 ) = (
   @     \forall integer i; 
-  @         0 <= i < \at ( ds -> size, L2 ) ==> 
-  @         (
-  @             ( 
-  @                 ( 
-  @                     find { L1 } ( ds, i, 0 ) != find { L1 } (  ds, element1, 0 ) && 
-  @                     find { L1 } ( ds, i, 0 ) != find { L1 } ( ds, element2, 0 ) 
-  @                 ) ==> (
-  @                     find { L1 } ( ds, i, 0 ) == find { L2 } ( ds, i, 0 ) 
-  @                 )
-  @             ) || ( 
-  @                 find { L1 } ( ds, i, 0 ) == find { L2 } ( ds, element1, 0 ) && 
-  @                 find { L2 } ( ds, i, 0 ) == find { L2 } ( ds, element2, 0 ) 
-  @             )
+  @     0 <= i < \at ( ds -> size, L2 ) ==> 
+  @     (
+  @         ( 
+  @         ( 
+  @             find { L1 } ( ds, i, 0 ) != find { L1 } (  ds, element1, 0 ) && 
+  @             find { L1 } ( ds, i, 0 ) != find { L1 } ( ds, element2, 0 ) 
+  @         ) ==> (
+  @             find { L1 } ( ds, i, 0 ) == find { L2 } ( ds, i, 0 ) 
   @         )
+  @         ) || ( 
+  @         find { L1 } ( ds, i, 0 ) == find { L2 } ( ds, element1, 0 ) && 
+  @         find { L2 } ( ds, i, 0 ) == find { L2 } ( ds, element2, 0 ) 
+  @         )
+  @     )
   @ );
   @
   @ predicate is_acyclic { L1 } ( DisjointSet * ds ) = (
@@ -119,9 +119,9 @@ bool contains ( int element, DisjointSet * set ) {
       @ loop variant set -> size - i;
     @*/
     for ( int i = 0; i < set -> size; i ++ ) {
-        if ( set -> elements [ i ] == element ) {
-            return true;
-        }
+    if ( set -> elements [ i ] == element ) {
+        return true;
+    }
     }
     return false;
 }
@@ -321,8 +321,8 @@ int makeSet ( int element, DisjointSet ** set  ) {
 @*/
 bool find ( int elementIndex, DisjointSet * set, int * setID ) {
     if ( elementIndex >= 0 && elementIndex < set -> size ) {
-        * setID = set -> parents [ elementIndex ];
-        /*@
+    * setID = set -> parents [ elementIndex ];
+    /*@
       	  @ loop invariant 0 <= * setID < set -> size;
 		  @
       	  @ loop assigns * setID;
@@ -330,13 +330,13 @@ bool find ( int elementIndex, DisjointSet * set, int * setID ) {
       	  @ loop variant set -> size - set -> ranks [ * setID ];
     	@*/
 		while ( ( * setID ) != set -> parents [ * setID ] ) {
-            * setID = set -> parents [ * setID ];
-        }
-        return true;
+        * setID = set -> parents [ * setID ];
+    }
+    return true;
     }
     else {
-        printf ( "Invalid element index!\n" );
-        return false;
+    printf ( "Invalid element index!\n" );
+    return false;
     }
 }
 
@@ -435,9 +435,10 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
 
 		if ( ( * set ) -> ranks [ firstParent ] > ( * set ) -> ranks [ secondParent ] ) {
 			swap ( & firstParent, & secondParent );
+			swap ( & elementIndex1, & elementIndex2 );
 		}
 
-		( * set ) -> parents [ firstParent ] = secondParent;
+		( * set ) -> parents [ firstParent ] = elementIndex2;
 		if ( ( * set ) -> ranks [ firstParent ] == ( * set ) -> ranks [ secondParent ] ) {
 			( * set ) -> ranks [ secondParent ] ++;
 		}

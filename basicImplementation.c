@@ -17,8 +17,8 @@ typedef struct TDisjointSet {
   @			ds != \null && 
   @			\valid ( ds ) 
   @		) ==> (
-  @         \freeable { L1 } ( ds -> elements ) &&
-  @         \freeable { L1 } ( ds -> parents )
+  @     \freeable { L1 } ( ds -> elements ) &&
+  @     \freeable { L1 } ( ds -> parents )
   @     )
   @ );
 */
@@ -31,7 +31,7 @@ typedef struct TDisjointSet {
   @     	ds -> size >= 1 &&
   @			ds -> capacity >= 1 && ds -> capacity >= ds -> size &&
   @		    ds -> elements != \null && \valid ( ds -> elements + ( 0 .. ds -> capacity - 1 ) ) &&
-  @         ds -> parents != \null && \valid ( ds -> parents + ( 0 .. ds -> capacity - 1 ) )
+  @     ds -> parents != \null && \valid ( ds -> parents + ( 0 .. ds -> capacity - 1 ) )
   @     )
   @ );      
 */
@@ -54,7 +54,7 @@ typedef struct TDisjointSet {
   @     \forall integer i; 
   @			0 <= i < \at ( ds -> size, L2 ) ==> 
   @     	(
-  @         	( 
+  @     	( 
   @					( 
   @						find { L1 } ( ds, i, 0 ) != find { L1 } (  ds, element1, 0 ) && 
   @						find { L1 } ( ds, i, 0 ) != find { L1 } ( ds, element2, 0 ) 
@@ -277,25 +277,25 @@ int makeSet ( int element, DisjointSet ** set  ) {
 @*/
 bool find ( int elementIndex, DisjointSet * set, int * setID ) {
 	if ( elementIndex >= 0 && elementIndex < set -> size ) {
-        * setID = set -> parents [ elementIndex ];
+    * setID = set -> parents [ elementIndex ];
 		//@ ghost int maxToProcess = set -> size;
 		/*@
-          @ loop invariant ( * setID ) >= 0;
-          @ loop invariant ( * setID ) < set -> size;
+      @ loop invariant ( * setID ) >= 0;
+      @ loop invariant ( * setID ) < set -> size;
  		  @
-          @ loop assigns * setID;
+      @ loop assigns * setID;
 		  @
-          @ loop variant maxToProcess; 
-        @*/
-        while ( ( * setID ) != set -> parents [ * setID ] ) {
-        	* setID = set -> parents [ * setID ];
-        	//@ ghost maxToProcess = maxToProcess - 1;
+      @ loop variant maxToProcess; 
+    @*/
+    while ( ( * setID ) != set -> parents [ * setID ] ) {
+    	* setID = set -> parents [ * setID ];
+    	//@ ghost maxToProcess = maxToProcess - 1;
 		}
 
     	return true;
     }
     else {
-        printf ( "Invalid element index!\n" );
+    printf ( "Invalid element index!\n" );
     	return false;
 	}
 }
@@ -342,25 +342,25 @@ bool find ( int elementIndex, DisjointSet * set, int * setID ) {
   @ disjoint behaviors; 
 @*/
 bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
-        if ( elementIndex1 >= 0 && elementIndex1 < ( * set ) -> size && elementIndex2 >= 0 && elementIndex2 < ( * set ) -> size ) {
-                int firstParent = 0, secondParent = 0;
-                find ( elementIndex1, * set, & firstParent );
-                find ( elementIndex2, * set, & secondParent );
-                if ( firstParent == secondParent ) {
-                        return true;
-                }
-                ( * set ) -> parents [ secondParent ] = elementIndex1;
-                return true;
+    if ( elementIndex1 >= 0 && elementIndex1 < ( * set ) -> size && elementIndex2 >= 0 && elementIndex2 < ( * set ) -> size ) {
+        int firstParent = 0, secondParent = 0;
+        find ( elementIndex1, * set, & firstParent );
+        find ( elementIndex2, * set, & secondParent );
+        if ( firstParent == secondParent ) {
+            return true;
         }
-        
+        ( * set ) -> parents [ secondParent ] = elementIndex1;
+        return true;
+    }
+    
 		if ( elementIndex1 < 0 || elementIndex1 >= ( * set ) -> size ) {
-                printf ( "Invalid index for first element!\n" );
-        }
-        
+        printf ( "Invalid index for first element!\n" );
+    }
+    
 		if ( elementIndex2 < 0 || elementIndex2 >= ( * set ) -> size ) {
-                printf ( "Invalid index for second element!\n" );
-        }
-        return false;
+        printf ( "Invalid index for second element!\n" );
+    }
+    return false;
 }
 
 /*@
