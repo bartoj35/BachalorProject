@@ -349,7 +349,7 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
                 if ( firstParent == secondParent ) {
                         return true;
                 }
-                ( * set ) -> parents [ secondParent ] = firstParent;
+                ( * set ) -> parents [ secondParent ] = elementIndex1;
                 return true;
         }
         
