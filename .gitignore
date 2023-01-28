@@ -6,6 +6,14 @@ rank
 size
 splitting
 
+# byte code from klee
+klee/basic/*.bc
+klee/compression/*.bc
+klee/halving/*.bc
+klee/rank/*.bc
+klee/size/*.bc
+klee/splitting/*.bc
+
 # meta files
 Thesis/*.aux
 Thesis/*.log
