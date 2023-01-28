@@ -120,4 +120,5 @@ void print ( DisjointSet * set ) {
     for ( int i = 0; i < set -> size; i ++ ) {
         printf ( "%d: %d\n", i, set -> parents [ i ] );
     }
+	printf ( "\n" );
 }
