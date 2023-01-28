@@ -18,5 +18,5 @@ Framework contains a lot of plugins for various analysis, from generating annota
 
 ## TODO
 * [Flush cache](https://www.tecmint.com/clear-ram-memory-cache-buffer-and-swap-space-on-linux/) before every benchmark
-* Use benchmark utilities
+* Use benchmark utilities (for example: [perf](https://perf.wiki.kernel.org/index.php/Main_Page))
 * Try symbolic execution engine overall, but ask about the cluster usage
