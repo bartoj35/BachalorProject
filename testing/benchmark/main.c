@@ -50,6 +50,7 @@ void testValid ( void ) {
 	unionSet ( 2, 3, & set );
 	unionSet ( 2, 5, & set );
 
+	print ( set );
 	freeSet ( set );
 }
 
@@ -74,8 +75,111 @@ void testEdgeCases ( void ) {
 	unionSet ( -1, -1, & set );
 	unionSet ( 1, 1, & set );
 
+	print ( set );
 	freeSet ( set );
 }
+
+
+void generated ( void ) {
+	DisjointSet * set = NULL;
+	for ( int i = 0; i < 10; i ++ ) {
+		makeSet ( i, & set );
+	}
+
+	unionSet ( 9, 6, & set );
+	unionSet ( 6, 8, & set );
+	unionSet ( 7, 0, & set );
+	unionSet ( 4, 4, & set );
+	unionSet ( 1, 8, & set );
+	unionSet ( 7, 7, & set );
+	unionSet ( 1, 8, & set );
+	unionSet ( 4, 9, & set );
+	unionSet ( 8, 6, & set );
+	unionSet ( 4, 5, & set );
+	unionSet ( 3, 3, & set );
+	unionSet ( 5, 3, & set );
+	unionSet ( 9, 8, & set );
+	unionSet ( 8, 2, & set );
+	unionSet ( 9, 0, & set );
+	unionSet ( 6, 4, & set );
+	unionSet ( 0, 8, & set );
+	unionSet ( 8, 0, & set );
+	unionSet ( 8, 3, & set );
+	unionSet ( 9, 0, & set );
+	unionSet ( 5, 3, & set );
+	unionSet ( 7, 6, & set );
+	unionSet ( 6, 6, & set );
+	unionSet ( 6, 0, & set );
+	unionSet ( 7, 7, & set );
+	unionSet ( 1, 1, & set );
+	unionSet ( 6, 4, & set );
+	unionSet ( 3, 7, & set );
+	unionSet ( 0, 3, & set );
+	unionSet ( 1, 7, & set );
+
+	int value = 0;
+	find ( 2, ARG, & value );
+	find ( 5, ARG, & value );
+	find ( 2, ARG, & value );
+	find ( 2, ARG, & value );
+	find ( 9, ARG, & value );
+	find ( 1, ARG, & value );
+	find ( 6, ARG, & value );
+	find ( 6, ARG, & value );
+	find ( 2, ARG, & value );
+	find ( 4, ARG, & value );
+	find ( 4, ARG, & value );
+	find ( 9, ARG, & value );
+	find ( 6, ARG, & value );
+	find ( 7, ARG, & value );
+	find ( 1, ARG, & value );
+	find ( 9, ARG, & value );
+	find ( 2, ARG, & value );
+	find ( 4, ARG, & value );
+	find ( 5, ARG, & value );
+	find ( 7, ARG, & value );
+
+	print ( set );
+	freeSet ( set );
+}
+
+void fuzzed ( void ) {
+	DisjointSet * set = NULL;
+	for ( int i = 0; i < 10; i ++ ) {
+		makeSet ( i, & set );
+	}
+
+	int value = 0;
+	unionSet ( 6, 9, & set );
+	find ( 3, ARG, & value );
+	unionSet ( 0, 1, & set );
+	unionSet ( 6, 2, & set );
+	unionSet ( 1, 9, & set );
+	unionSet ( 7, 7, & set );
+	unionSet ( 8, 4, & set );
+	find ( 7, ARG, & value );
+	unionSet ( 8, 1, & set );
+	unionSet ( 5, 7, & set );
+	find ( 2, ARG, & value );
+	find ( 0, ARG, & value );
+	unionSet ( 2, 3, & set );
+	unionSet ( 6, 5, & set );
+	unionSet ( 4, 4, & set );
+	unionSet ( 5, 2, & set );
+	unionSet ( 8, 8, & set );
+	unionSet ( 6, 5, & set );
+	unionSet ( 8, 8, & set );
+	unionSet ( 3, 0, & set );
+	unionSet ( 6, 6, & set );
+	unionSet ( 4, 9, & set );
+	unionSet ( 4, 0, & set );
+	unionSet ( 9, 5, & set );
+	unionSet ( 2, 9, & set );
+
+	print ( set );
+	freeSet ( set );
+}
+
 #endif
 
 int main ( void ) {
@@ -86,8 +190,8 @@ int main ( void ) {
 #else
 	testValid ( );
 	testEdgeCases ( );
-	test1 ( );
-	test2 ( );
+	generated ( );
+	fuzzed ( );
 #endif
 	return 0;
 }
