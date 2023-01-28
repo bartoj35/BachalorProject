@@ -1,13 +1,6 @@
 import random
 
-NEWLINE = '\n'
-TAB = '\t'
-LEFT_CURLY = '{'
-RIGHT_CURLY = '}'
-FILE_COUNT = 2
-
-
-file = open(str(input(f'Enter name for the test file: ') + '.test'), 'w')
+file = open(str(input(f'Enter name for the test file: ')), 'w')
 set_size = int(input('Enter disjoint set size: '))
 
 
