@@ -106,10 +106,9 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
 
 		if ( ( * set ) -> ranks [ firstParent ] > ( * set ) -> ranks [ secondParent ] ) {
 			swap ( & firstParent, & secondParent );
-			swap ( & elementIndex1, & elementIndex2 );
 		}
-
-		( * set ) -> parents [ firstParent ] = elementIndex2;
+		
+		( * set ) -> parents [ firstParent ] = secondParent;
 		if ( ( * set ) -> ranks [ firstParent ] == ( * set ) -> ranks [ secondParent ] ) {
 			( * set ) -> ranks [ secondParent ] ++;
 		}
