@@ -146,43 +146,33 @@ void print ( DisjointSet * set ) {
 
 
 int main ( void ) {
-	DisjointSet * set = NULL;
+    DisjointSet * set = NULL;
 
-	for ( int i = 1; i <= 6; i ++ ) {
-		makeSet ( i, & set );
-	}
+    for ( int i = 1; i <= 6; i ++ ) {
+        makeSet ( i, & set );
+    }
 
-	int a;
-	klee_make_symbolic ( & a, sizeof ( a ), "a" );
+    int a;
+    klee_make_symbolic ( & a, sizeof ( a ), "a" );
     makeSet ( a, & set );
-	
-	int b;
-	klee_make_symbolic ( & b, sizeof ( b ), "b" );
-	int value = 0;
-	find ( b, set, & value );
 
-	int c, d, e, f, g, h, i, j, k;	
-	klee_make_symbolic ( & c, sizeof ( c ), "c" );
-	klee_make_symbolic ( & d, sizeof ( d ), "d" );
-	klee_make_symbolic ( & e, sizeof ( e ), "e" );
-	klee_make_symbolic ( & f, sizeof ( f ), "f" );
-	klee_make_symbolic ( & g, sizeof ( g ), "g" );
-	klee_make_symbolic ( & h, sizeof ( h ), "h" );
-	klee_make_symbolic ( & i, sizeof ( i ), "i" );
-	klee_make_symbolic ( & j, sizeof ( j ), "j" );
-	klee_make_symbolic ( & k, sizeof ( k ), "k" );
-	
-	unionSet ( b, c, & set );
-	unionSet ( d, e, & set );
-	unionSet ( f, g, & set );
-	unionSet ( h, i, & set );
-	unionSet ( j, k, & set );
-	
-	int l;
-	klee_make_symbolic ( & l, sizeof ( l ), "l" );
-	find ( l, set, & value );
+    int b;
+    klee_make_symbolic ( & b, sizeof ( b ), "b" );
+    int value = 0;
+    find ( b, & set, & value );
 
-	freeSet ( set );
-	return 0;
+    int c, d;
+    klee_make_symbolic ( & c, sizeof ( c ), "c" );
+    klee_make_symbolic ( & d, sizeof ( d ), "d" );
+
+    unionSet ( c, d, & set );
+
+    int e;
+    klee_make_symbolic ( & e, sizeof ( e ), "e" );
+    find ( e, & set, & value );
+
+    freeSet ( set );
+    return 0;
 }
+
 
