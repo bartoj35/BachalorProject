@@ -139,7 +139,6 @@ bool contains ( int element, DisjointSet * set ) {
   @
   @ behavior no_set:
   @		assumes * set == \null;
-  @		assumes \allocable { Here } ( * set ); 
   @	
   @		allocates * set;		
   @		allocates ( * set ) -> elements;		
@@ -465,9 +464,6 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
   @ frees set -> elements;
   @ frees set -> parents;
   @ frees set -> sizes;
-  @
-  @ ensures \allocable { Here } ( set );
-  @
 @*/
 void freeSet ( DisjointSet * set ) {
 	free ( set -> sizes );

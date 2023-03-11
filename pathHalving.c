@@ -122,7 +122,7 @@ bool contains ( int element, DisjointSet * set ) {
   @ requires \is_acyclic { Here } ( * set );
   @	
   @ behavior no_set:
-  @		assumes * set == \null && \allocable { Here } ( * set ); 
+  @		assumes * set == \null;
   @		
   @		allocates * set;		
   @		allocates ( * set ) -> elements;		
@@ -390,9 +390,6 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
   @ frees set -> elements;
   @ frees set -> parents;
   @ frees set;
-  @
-  @ ensures \allocable { Here } ( set );
-  @
 @*/
 void freeSet ( DisjointSet * set ) {
     free ( set -> parents );

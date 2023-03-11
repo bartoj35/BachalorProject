@@ -119,7 +119,7 @@ bool contains ( int element, DisjointSet * set ) {
   @ requires \is_acyclic { Here } ( * set );
   @
   @ behavior no_set:
-  @		assumes * set == \null && \allocable { Here } ( * set ); 
+  @		assumes * set == \null;
   @		
   @		allocates * set;		
   @		allocates ( * set ) -> elements;		
@@ -276,6 +276,8 @@ int makeSet ( int element, DisjointSet ** set  ) {
   @     ensures \freeable_set { Here } ( set );
   @     ensures \valid_parts ( set );
   @     ensures \is_acyclic { Here } ( set );
+  @
+  @ disjoint behaviors;
 @*/
 bool find ( int elementIndex, DisjointSet * set, int * setID ) {
 	if ( elementIndex >= 0 && elementIndex < set -> size ) {
@@ -377,9 +379,6 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
   @ frees set -> elements;
   @ frees set -> parents;
   @ frees set;
-  @
-  @	ensures \allocable { Here } ( set );
-  @
 @*/
 void freeSet ( DisjointSet * set ) {
 	free ( set -> parents );
