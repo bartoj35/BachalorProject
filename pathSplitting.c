@@ -324,6 +324,8 @@ bool find ( int elementIndex, DisjointSet ** set, int * setID ) {
   @
   @     allocates \nothing;
   @
+  @		assigns \nothing;
+  @
   @     frees \nothing;
   @
   @     ensures \result == true;

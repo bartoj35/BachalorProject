@@ -346,8 +346,12 @@ bool find ( int elementIndex, DisjointSet * set, int * setID ) {
   @     assumes second != \null;
   @		assumes \valid ( second );
   @
+  @		allocates \nothing;
+  @
   @     assigns * first;
   @     assigns * second;
+  @
+  @		frees \nothing;
   @
   @     ensures first != \null;
   @		ensures \valid ( first );
@@ -359,6 +363,12 @@ bool find ( int elementIndex, DisjointSet * set, int * setID ) {
   @
   @ behavior no_swap:
   @     assumes first == \null || ! \valid ( first ) || second == \null || ! \valid ( second );
+  @
+  @		allocates \nothing;
+  @
+  @		assigns \nothing;
+  @
+  @		frees \nothing;
   @
   @     ensures \result == \false;
   @
@@ -392,7 +402,7 @@ bool swap ( int * first, int * second ) {
   @
   @     allocates \nothing;
   @
-  @     
+  @    	assigns \nothing; 
   @
   @     frees \nothing;
   @

@@ -329,6 +329,7 @@ bool find ( int elementIndex, DisjointSet ** set, int * setID ) {
   @
   @     allocates \nothing;
   @
+  @		assigns \nothing;
   @
   @     frees \nothing;
   @
@@ -345,6 +346,8 @@ bool find ( int elementIndex, DisjointSet ** set, int * setID ) {
   @ 	allocates \nothing;
   @
   @ 	assigns \nothing;
+  @
+  @		frees \nothing;
   @
   @     ensures \result == \false;
   @
