@@ -6,15 +6,15 @@
 #define DEFAULT_CAPACITY 2
 
 
-typedef struct TDisjointSet {
+typedef struct TUnionFind {
 	int *	parents;
 	int *	elements;
 	int 	capacity;
 	int 	size;
-} DisjointSet;
+} UnionFind;
 
 
-bool contains ( int element, DisjointSet * set ) {
+bool contains ( int element, UnionFind * set ) {
     for ( int i = 0; i < set -> size; i ++ ) {
         if ( set -> elements [ i ] == element ) {
             return true;
@@ -24,9 +24,9 @@ bool contains ( int element, DisjointSet * set ) {
 }
 
 
-int makeSet ( int element, DisjointSet ** set  ) {
+int makeSet ( int element, UnionFind ** set  ) {
     if ( ( * set ) == NULL ) {
-        * set = ( DisjointSet * ) malloc ( 1 * sizeof ( DisjointSet ) );
+        * set = ( UnionFind * ) malloc ( 1 * sizeof ( UnionFind ) );
         ( * set ) -> size = 1;
         ( * set ) -> capacity = DEFAULT_CAPACITY;
         ( * set ) -> elements = ( int * ) malloc ( DEFAULT_CAPACITY * sizeof ( * ( * set ) -> elements ) );
@@ -61,7 +61,7 @@ int makeSet ( int element, DisjointSet ** set  ) {
 }
 
 
-bool find ( int elementIndex, DisjointSet ** set, int * setID ) {
+bool find ( int elementIndex, UnionFind ** set, int * setID ) {
 	if ( elementIndex >= 0 && elementIndex < ( * set ) -> size ) {
 		* setID = elementIndex;
 		
@@ -80,7 +80,7 @@ bool find ( int elementIndex, DisjointSet ** set, int * setID ) {
 }
 
 
-bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
+bool unionSet ( int elementIndex1, int elementIndex2, UnionFind ** set ) {
 	if ( elementIndex1 >= 0 && elementIndex1 < ( * set ) -> size && elementIndex2 >= 0 && elementIndex2 < ( * set ) -> size ) {
 		int firstParent = 0, secondParent = 0;
 		find ( elementIndex1, set, & firstParent );
@@ -104,7 +104,7 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
 }
 
 
-void freeSet ( DisjointSet * set ) {
+void freeSet ( UnionFind * set ) {
     free ( set -> parents );
     set -> parents = NULL;
     free ( set -> elements );
@@ -116,7 +116,7 @@ void freeSet ( DisjointSet * set ) {
 }
 
 
-void print ( DisjointSet * set ) {
+void print ( UnionFind * set ) {
     for ( int i = 0; i < set -> size; i ++ ) {
         printf ( "%d: %d\n", i, set -> parents [ i ] );
     }
@@ -124,7 +124,7 @@ void print ( DisjointSet * set ) {
 
 
 int main ( void ) {
-	DisjointSet * set = NULL;
+	UnionFind * set = NULL;
 
 	for ( int i = 1; i <= 6; i ++ ) {
 		makeSet ( i, & set );
