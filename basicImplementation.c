@@ -93,6 +93,7 @@ typedef struct TUnionFind {
   @
   @ ensures \freeable_set { Here } ( set );
   @ ensures \valid_parts ( set );
+  @ ensures \is_acyclic { Here } ( * set );
 @*/	
 bool contains ( int element, UnionFind * set ) {
 	/*@
