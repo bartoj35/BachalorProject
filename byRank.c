@@ -145,6 +145,14 @@ bool contains ( int element, UnionFind * set ) {
   @		allocates ( * set ) -> ranks;
   @
   @		assigns * set;		
+  @		assigns ( * set ) -> elements;		
+  @		assigns ( * set ) -> elements [ 0 ];	
+  @		assigns ( * set ) -> parents;	
+  @		assigns ( * set ) -> parents [ 0 ];	
+  @		assigns ( * set ) -> ranks;	
+  @		assigns ( * set ) -> ranks [ 0 ];	
+  @		assigns ( * set ) -> capacity;	
+  @		assigns ( * set ) -> size;
   @		
   @		frees \nothing;		
   @		
@@ -402,7 +410,8 @@ bool swap ( int * first, int * second ) {
   @
   @     allocates \nothing;
   @
-  @    	assigns \nothing; 
+  @		assigns ( * set ) -> parents [ 0 .. \old ( ( * set ) -> size ) ];	
+  @		assigns ( * set ) -> ranks [ 0 .. \old ( ( * set ) -> size ) ];	
   @
   @     frees \nothing;
   @

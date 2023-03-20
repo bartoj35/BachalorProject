@@ -126,6 +126,12 @@ bool contains ( int element, UnionFind * set ) {
   @		allocates ( * set ) -> parents;
   @
   @		assigns * set;		
+  @		assigns ( * set ) -> elements;	
+  @		assigns ( * set ) -> elements [ 0 ];	
+  @		assigns ( * set ) -> parents;	
+  @		assigns ( * set ) -> parents [ 0 ];	
+  @		assigns ( * set ) -> capacity;	
+  @		assigns ( * set ) -> size;	
   @		
   @		frees \nothing;		
   @		
@@ -153,7 +159,7 @@ bool contains ( int element, UnionFind * set ) {
   @		assigns ( * set ) -> parents [ 0 .. \old ( ( * set ) -> size ) ];	
   @		assigns ( * set ) -> capacity;	
   @		assigns ( * set ) -> size;	
-  	
+  @	
   @		frees ( * set ) -> elements;		
   @		frees ( * set ) -> parents;		
   @	
@@ -324,7 +330,7 @@ bool find ( int elementIndex, UnionFind ** set, int * setID ) {
   @
   @     allocates \nothing;
   @
-  @		assigns \nothing;
+  @     assigns ( * set ) -> parents [ 0 .. ( * set ) -> size ];
   @
   @     frees \nothing;
   @
