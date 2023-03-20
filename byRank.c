@@ -410,8 +410,8 @@ bool swap ( int * first, int * second ) {
   @
   @     allocates \nothing;
   @
-  @		assigns ( * set ) -> parents [ 0 .. \old ( ( * set ) -> size ) ];	
-  @		assigns ( * set ) -> ranks [ 0 .. \old ( ( * set ) -> size ) ];	
+  @		assigns ( * set ) -> parents [ 0 .. ( * set ) -> size ];	
+  @		assigns ( * set ) -> ranks [ 0 .. ( * set ) -> size ];	
   @
   @     frees \nothing;
   @

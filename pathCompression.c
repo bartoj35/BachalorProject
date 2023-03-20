@@ -260,7 +260,7 @@ int makeSet ( int element, UnionFind ** set  ) {
   @     allocates \nothing;
   @
   @     assigns * setID;
-  @		assigns ( * set ) -> parents [ 0 .. \old ( ( * set ) -> size ) ];	
+  @		assigns ( * set ) -> parents [ 0 .. ( * set ) -> size ];	
   @
   @     frees \nothing;
   @

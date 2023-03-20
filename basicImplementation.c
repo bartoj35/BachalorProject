@@ -178,9 +178,9 @@ bool contains ( int element, UnionFind * set ) {
   @		
   @		allocates \nothing;
   @
-  @		assigns ( * set ) -> size;
   @		assigns ( * set ) -> elements [ \old ( ( * set ) -> size ) ];
   @		assigns ( * set ) -> parents [ \old ( ( * set ) -> size ) ];
+  @		assigns ( * set ) -> size;
   @
   @		frees \nothing;
   @
