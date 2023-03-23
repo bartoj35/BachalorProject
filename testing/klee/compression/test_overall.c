@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+
 #define DEFAULT_CAPACITY 2
 
 
@@ -124,8 +125,6 @@ void print ( UnionFind * set ) {
     for ( int i = 0; i < set -> size; i ++ ) {
         printf ( "%d: %d\n", i, set -> parents [ i ] );
     }
-
-
 }
 
 

@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+
 #define DEFAULT_CAPACITY 2
 
 
@@ -12,6 +13,7 @@ typedef struct TUnionFind {
 	int 	capacity;
 	int 	size;
 } UnionFind;
+
 
 /*@ predicate \freeable_set { L1 } ( UnionFind * ds ) = (
   @ 	( 
@@ -24,14 +26,13 @@ typedef struct TUnionFind {
   @ );
 */
 
+
 /*@ predicate \valid_ranks ( UnionFind * ds ) = (
   @ 	( 
   @			ds != \null && 
   @			\valid ( ds ) 
   @		) ==> (
-  @			\forall integer index; 
-  @				0 <= index < ds -> size ==> 
-  @					ds -> ranks [ index ] <= ds -> ranks [ ds -> parents [ index ] ]
+  @			\forall integer index; 0 <= index < ds -> size ==> ds -> ranks [ index ] <= ds -> ranks [ ds -> parents [ index ] ]
   @ 	)
   @ );
 */
@@ -43,13 +44,14 @@ typedef struct TUnionFind {
   @			\valid ( ds )  
   @		) ==> ( 
   @			ds -> size >= 1 &&
-  @     ds -> capacity >= 1 && ds -> capacity >= ds -> size &&
+  @     	ds -> capacity >= 1 && ds -> capacity >= ds -> size &&
   @			ds -> elements != \null && \valid ( ds -> elements + ( 0 .. ds -> capacity - 1 ) ) &&
   @			ds -> parents != \null && \valid ( ds -> parents + ( 0 .. ds -> capacity - 1 ) ) &&
   @			ds -> ranks != \null && \valid ( ds -> ranks + ( 0 .. ds -> capacity - 1 ) )
   @		)
   @ );		
 */
+
 
 /*@ logic integer find { L1 } ( UnionFind * ds, integer i, integer length ) = (
   @     ( length >= \at ( ds -> size, L1 ) ) 
@@ -70,15 +72,15 @@ typedef struct TUnionFind {
   @     0 <= i < \at ( ds -> size, L2 ) ==> 
   @     (
   @         ( 
-  @         ( 
-  @             find { L1 } ( ds, i, 0 ) != find { L1 } (  ds, element1, 0 ) && 
-  @             find { L1 } ( ds, i, 0 ) != find { L1 } ( ds, element2, 0 ) 
-  @         ) ==> (
-  @             find { L1 } ( ds, i, 0 ) == find { L2 } ( ds, i, 0 ) 
-  @         )
+  @         	( 
+  @             	find { L1 } ( ds, i, 0 ) != find { L1 } (  ds, element1, 0 ) && 
+  @             	find { L1 } ( ds, i, 0 ) != find { L1 } ( ds, element2, 0 ) 
+  @         	) ==> (
+  @             	find { L1 } ( ds, i, 0 ) == find { L2 } ( ds, i, 0 ) 
+  @         	)
   @         ) || ( 
-  @         find { L1 } ( ds, i, 0 ) == find { L2 } ( ds, element1, 0 ) && 
-  @         find { L2 } ( ds, i, 0 ) == find { L2 } ( ds, element2, 0 ) 
+  @         	find { L1 } ( ds, i, 0 ) == find { L2 } ( ds, element1, 0 ) && 
+  @         	find { L2 } ( ds, i, 0 ) == find { L2 } ( ds, element2, 0 ) 
   @         )
   @     )
   @ );
@@ -89,6 +91,7 @@ typedef struct TUnionFind {
   @     \forall integer i; 0 <= i < \at ( ds -> size, L1 ) ==> find ( ds, i, 0 ) != -1
   @ );
 */
+
 
 /*@
   @ requires \freeable_set { Here } ( set );
@@ -117,9 +120,9 @@ bool contains ( int element, UnionFind * set ) {
       @ loop variant set -> size - i;
     @*/
     for ( int i = 0; i < set -> size; i ++ ) {
-    if ( set -> elements [ i ] == element ) {
-        return true;
-    }
+	    if ( set -> elements [ i ] == element ) {
+    	    return true;
+    	}
     }
     return false;
 }
@@ -326,8 +329,8 @@ int makeSet ( int element, UnionFind ** set  ) {
 @*/
 bool find ( int elementIndex, UnionFind * set, int * setID ) {
     if ( elementIndex >= 0 && elementIndex < set -> size ) {
-    * setID = set -> parents [ elementIndex ];
-    /*@
+    	* setID = set -> parents [ elementIndex ];
+    	/*@
       	  @ loop invariant 0 <= * setID < set -> size;
 		  @
       	  @ loop assigns * setID;
@@ -335,15 +338,16 @@ bool find ( int elementIndex, UnionFind * set, int * setID ) {
       	  @ loop variant set -> size - set -> ranks [ * setID ];
     	@*/
 		while ( ( * setID ) != set -> parents [ * setID ] ) {
-        * setID = set -> parents [ * setID ];
-    }
-    return true;
+   	    	* setID = set -> parents [ * setID ];
+    	}
+    	return true;
     }
     else {
-    printf ( "Invalid element index!\n" );
-    return false;
+    	printf ( "Invalid element index!\n" );
+    	return false;
     }
 }
+
 
 /*@
   @ behavior swap:
@@ -470,6 +474,7 @@ bool unionSet ( int elementIndex1, int elementIndex2, UnionFind ** set ) {
 	return false;
 }
 
+
 /*@
   @ requires \freeable_set { Here } ( set );
   @ requires \valid_parts ( set );
@@ -500,6 +505,7 @@ void freeSet ( UnionFind * set ) {
 	set -> capacity = 0;
 	free ( & ( * set ) );
 }
+
 
 /*@
   @ requires \true;

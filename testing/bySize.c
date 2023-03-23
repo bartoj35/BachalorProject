@@ -2,12 +2,13 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+
 #define DEFAULT_CAPACITY 2
 
 
 typedef struct TUnionFind {
 	int *	parents;
-	int * elements;
+	int * 	elements;
 	int *	sizes;
 	int 	capacity;
 	int 	size;

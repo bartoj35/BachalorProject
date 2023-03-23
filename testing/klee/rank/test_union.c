@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+
 #define DEFAULT_CAPACITY 2
 
 
@@ -75,8 +76,8 @@ bool find ( int elementIndex, UnionFind * set, int * setID ) {
     return true;
     }
     else {
-    printf ( "Invalid element index!\n" );
-    return false;
+	    printf ( "Invalid element index!\n" );
+    	return false;
     }
 }
 

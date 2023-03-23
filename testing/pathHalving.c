@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+
 #define DEFAULT_CAPACITY 2
 
 

@@ -13,6 +13,7 @@ typedef struct TUnionFind {
 	int 	size;
 } UnionFind;
 
+
 /*@ predicate \freeable_set { L1 } ( UnionFind * ds ) = (
   @     ( 
   @			ds != \null && 
@@ -23,6 +24,7 @@ typedef struct TUnionFind {
   @     )
   @ );
 */
+
 
 /*@ predicate \valid_parts ( UnionFind * ds ) = (
   @     ( 
@@ -36,6 +38,7 @@ typedef struct TUnionFind {
   @     )
   @ );      
 */
+
 
 /*@ logic integer find { L1 } ( UnionFind * ds, integer i, integer length ) = (
   @ 	( length >= ds -> size ) 
@@ -66,7 +69,7 @@ typedef struct TUnionFind {
   @						find { L2 } ( ds, i, 0 ) == find { L2 } ( ds, element2, 0 ) 
   @					)
   @ 			)
-  @ 		)
+  @		)
   @ );
   @
   @ predicate \is_acyclic { L1 } ( UnionFind * ds ) = (
@@ -75,6 +78,7 @@ typedef struct TUnionFind {
   @		\forall integer i; 0 <= i < \at ( ds -> size, L1 ) ==> find ( ds, i, 0 ) != -1
   @ );
 */
+
 
 /*@
   @ requires \freeable_set { Here } ( set );
@@ -248,6 +252,7 @@ int makeSet ( int element, UnionFind ** set  ) {
     }
 }
 
+
 /*@
   @ requires set != \null;
   @ requires \valid ( set );
@@ -317,6 +322,7 @@ bool find ( int elementIndex, UnionFind ** set, int * setID ) {
 	}
 }
 
+
 /*@
   @ requires set != \null;
   @ requires \valid ( set );
@@ -380,6 +386,7 @@ bool unionSet ( int elementIndex1, int elementIndex2, UnionFind ** set ) {
 	}
 	return false;
 }
+
 
 /*@
   @ requires \freeable_set { Here } ( set );

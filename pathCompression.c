@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+
 #define DEFAULT_CAPACITY 2
 
 
@@ -11,6 +12,7 @@ typedef struct TUnionFind {
 	int 	capacity;
 	int 	size;
 } UnionFind;
+
 
 /*@ predicate \freeable_set { L1 } ( UnionFind * ds ) = (
   @     ( 
@@ -22,6 +24,7 @@ typedef struct TUnionFind {
   @     )
   @ );
 */
+
 
 /*@ predicate \valid_parts ( UnionFind * ds ) = (
   @     ( 
@@ -51,8 +54,7 @@ typedef struct TUnionFind {
   @ );
   @
   @ predicate \correctly_unioned { L1, L2 } ( UnionFind * ds, integer element1, integer element2 ) = (
-  @     \forall integer i;
-  @			0 <= i < \at ( ds -> size, L2 ) ==> 
+  @     \forall integer i; 0 <= i < \at ( ds -> size, L2 ) ==> 
   @     	(
   @         	( 
   @					( 
@@ -65,7 +67,7 @@ typedef struct TUnionFind {
   @					find { L1 } ( ds, i, 0 ) == find { L1 } ( ds, element1, 0 ) && 
   @					find { L2 } ( ds, i, 0 ) == find { L2 } ( ds, element2, 0 ) 
   @				)
-  @     	)
+  @     )
   @ );
   @
   @ predicate \is_acyclic { L1 } ( UnionFind * ds ) = ( 
@@ -74,6 +76,7 @@ typedef struct TUnionFind {
   @		\forall integer i; 0 <= i < \at ( ds -> size, L1 ) ==> find ( ds, i, 0 ) != -1
   @ );
 */
+
 
 /*@
   @ requires \freeable_set { Here } ( set );
@@ -246,6 +249,7 @@ int makeSet ( int element, UnionFind ** set  ) {
     }
 }
 
+
 /*@
   @ requires set != \null;
   @	requires \valid ( set );
@@ -397,6 +401,7 @@ bool unionSet ( int elementIndex1, int elementIndex2, UnionFind ** set ) {
 	}
 	return false;
 }
+
 
 /*@
   @ requires \freeable_set { Here } ( set );

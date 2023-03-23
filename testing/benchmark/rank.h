@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+
 #define DEFAULT_CAPACITY 2
 
 
@@ -68,15 +69,15 @@ int makeSet ( int element, UnionFind ** set  ) {
 
 bool find ( int elementIndex, UnionFind * set, int * setID ) {
     if ( elementIndex >= 0 && elementIndex < set -> size ) {
-    * setID = set -> parents [ elementIndex ];
+    	* setID = set -> parents [ elementIndex ];
 		while ( ( * setID ) != set -> parents [ * setID ] ) {
-        * setID = set -> parents [ * setID ];
-    }
-    return true;
+        	* setID = set -> parents [ * setID ];
+    	}
+    	return true;
     }
     else {
-    printf ( "Invalid element index!\n" );
-    return false;
+    	printf ( "Invalid element index!\n" );
+    	return false;
     }
 }
 

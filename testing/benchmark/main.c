@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+
 #if defined ( BASIC )
 	#define ARG set
 	#include "basic.h"
@@ -21,6 +22,7 @@
 #else
 	#define INVALID
 #endif
+
 
 #ifndef INVALID
 void testValid ( void ) {

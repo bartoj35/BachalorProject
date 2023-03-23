@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+
 #define DEFAULT_CAPACITY 2
 
 
@@ -101,7 +102,7 @@ bool unionSet ( int elementIndex1, int elementIndex2, UnionFind ** set ) {
 		find ( elementIndex1, * set, & firstParent );
 		find ( elementIndex2, * set, & secondParent );
 		
-    if ( firstParent == secondParent ) {
+    	if ( firstParent == secondParent ) {
 			return true;
 		}
 
