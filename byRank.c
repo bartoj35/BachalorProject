@@ -5,15 +5,15 @@
 #define DEFAULT_CAPACITY 2
 
 
-typedef struct TDisjointSet {
+typedef struct TUnionFind {
 	int *	ranks;
 	int *	parents;
 	int *	elements;
 	int 	capacity;
 	int 	size;
-} DisjointSet;
+} UnionFind;
 
-/*@ predicate \freeable_set { L1 } ( DisjointSet * ds ) = (
+/*@ predicate \freeable_set { L1 } ( UnionFind * ds ) = (
   @ 	( 
   @			ds != \null && \valid ( ds ) 
   @		) ==> (
@@ -24,7 +24,7 @@ typedef struct TDisjointSet {
   @ );
 */
 
-/*@ predicate \valid_ranks ( DisjointSet * ds ) = (
+/*@ predicate \valid_ranks ( UnionFind * ds ) = (
   @ 	( 
   @			ds != \null && 
   @			\valid ( ds ) 
@@ -37,7 +37,7 @@ typedef struct TDisjointSet {
 */
 
 
-/*@ predicate \valid_parts ( DisjointSet * ds ) = (
+/*@ predicate \valid_parts ( UnionFind * ds ) = (
   @		( 
   @			ds != \null && 
   @			\valid ( ds )  
@@ -51,7 +51,7 @@ typedef struct TDisjointSet {
   @ );		
 */
 
-/*@ logic integer find { L1 } ( DisjointSet * ds, integer i, integer length ) = (
+/*@ logic integer find { L1 } ( UnionFind * ds, integer i, integer length ) = (
   @     ( length >= \at ( ds -> size, L1 ) ) 
   @     ? 
   @     -1 
@@ -65,7 +65,7 @@ typedef struct TDisjointSet {
   @     ) 
   @ );
   @
-  @ predicate \correctly_unioned { L1, L2 } ( DisjointSet * ds, integer element1, integer element2 ) = (
+  @ predicate \correctly_unioned { L1, L2 } ( UnionFind * ds, integer element1, integer element2 ) = (
   @     \forall integer i; 
   @     0 <= i < \at ( ds -> size, L2 ) ==> 
   @     (
@@ -83,7 +83,7 @@ typedef struct TDisjointSet {
   @     )
   @ );
   @
-  @ predicate \is_acyclic { L1 } ( DisjointSet * ds ) = (
+  @ predicate \is_acyclic { L1 } ( UnionFind * ds ) = (
   @     ds == \null || 
   @     ! \valid ( ds ) || 
   @     \forall integer i; 0 <= i < \at ( ds -> size, L1 ) ==> find ( ds, i, 0 ) != -1
@@ -93,7 +93,6 @@ typedef struct TDisjointSet {
 /*@
   @ requires \freeable_set { Here } ( set );
   @ requires \valid_parts ( set );
-  @	requires \valid_ranks ( set );
   @ requires \is_acyclic { Here } ( set );
   @  
   @ allocates \nothing;
@@ -102,15 +101,14 @@ typedef struct TDisjointSet {
   @
   @ frees \nothing;
   @
-  @ ensures \result == \true ==> \exists integer index; 0 <= index < set -> size ==> set -> elements [ index ] == element;
-  @ ensures \result == \false ==> \forall integer index; 0 <= index < set -> size ==> set -> elements [ index ] != element;
+  @ ensures \result == \true ==> \exists integer index; 0 <= index < set -> size ==> set -> elements [ index ] == element;  
+  @ ensures \result == \false ==> \forall integer index; 0 <= index < set -> size ==> set -> elements [ index ] != element;  
   @
-  @	ensures \freeable_set { Here } ( set );
-  @	ensures \valid_parts ( set );
-  @	ensures \valid_ranks ( set );
+  @ ensures \freeable_set { Here } ( set );
+  @ ensures \valid_parts ( set );
   @ ensures \is_acyclic { Here } ( set );
 @*/
-bool contains ( int element, DisjointSet * set ) {
+bool contains ( int element, UnionFind * set ) {
     /*@
       @ loop invariant 0 <= i <= set -> size;
   	  @
@@ -243,9 +241,9 @@ bool contains ( int element, DisjointSet * set ) {
   @ 
   @ complete behaviors; 
 */
-int makeSet ( int element, DisjointSet ** set  ) {
+int makeSet ( int element, UnionFind ** set  ) {
 	if ( ( * set ) == NULL ) {
-		* set = ( DisjointSet * ) malloc ( 1 * sizeof ( DisjointSet ) );
+		* set = ( UnionFind * ) malloc ( 1 * sizeof ( UnionFind ) );
 		( * set ) -> size = 1;
 		( * set ) -> capacity = DEFAULT_CAPACITY;
 		( * set ) -> elements = ( int * ) malloc ( DEFAULT_CAPACITY * sizeof ( ( * set ) -> elements ) );
@@ -326,7 +324,7 @@ int makeSet ( int element, DisjointSet ** set  ) {
   @ 	ensures \is_acyclic { Here } ( set );
   @
 @*/
-bool find ( int elementIndex, DisjointSet * set, int * setID ) {
+bool find ( int elementIndex, UnionFind * set, int * setID ) {
     if ( elementIndex >= 0 && elementIndex < set -> size ) {
     * setID = set -> parents [ elementIndex ];
     /*@
@@ -411,7 +409,7 @@ bool swap ( int * first, int * second ) {
   @     allocates \nothing;
   @
   @		assigns ( * set ) -> parents [ 0 .. ( * set ) -> size ];	
-  @		assigns ( * set ) -> ranks [ 0 .. ( * set ) -> size ];	
+  @		assigns ( * set ) -> ranks [ 0 .. ( * set ) -> size ];
   @
   @     frees \nothing;
   @
@@ -441,7 +439,7 @@ bool swap ( int * first, int * second ) {
   @ 
   @ disjoint behaviors; 
 @*/
-bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
+bool unionSet ( int elementIndex1, int elementIndex2, UnionFind ** set ) {
 	if ( elementIndex1 >= 0 && elementIndex1 < ( * set ) -> size && elementIndex2 >= 0 && elementIndex2 < ( * set ) -> size ) {
 		int firstParent = 0, secondParent = 0;
 		find ( elementIndex1, * set, & firstParent );
@@ -480,7 +478,6 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
   @
   @ allocates \nothing;
   @
-  @ assigns set;
   @ assigns set -> capacity;
   @ assigns set -> elements;
   @ assigns set -> ranks;
@@ -492,7 +489,7 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
   @ frees set -> parents;
   @ frees set -> ranks;
 @*/
-void freeSet ( DisjointSet * set ) {
+void freeSet ( UnionFind * set ) {
 	free ( set -> ranks );
 	set -> ranks = NULL;
 	free ( set -> parents );
@@ -516,7 +513,7 @@ void freeSet ( DisjointSet * set ) {
   @ ensures \result == 0;
 */
 int main ( void ) {
-	DisjointSet * set = NULL;
+	UnionFind * set = NULL;
 	// test adding new element
     makeSet ( 1, & set );
 
