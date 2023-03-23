@@ -126,6 +126,12 @@ bool contains ( int element, DisjointSet * set ) {
   @		allocates ( * set ) -> parents;
   @
   @		assigns * set;		
+  @		assigns ( * set ) -> elements;	
+  @		assigns ( * set ) -> elements [ 0 ];	
+  @		assigns ( * set ) -> parents;	
+  @		assigns ( * set ) -> parents [ 0 ];	
+  @		assigns ( * set ) -> capacity;	
+  @		assigns ( * set ) -> size;	
   @		
   @		frees \nothing;		
   @		
@@ -254,6 +260,7 @@ int makeSet ( int element, DisjointSet ** set  ) {
   @     allocates \nothing;
   @
   @     assigns * setID;
+  @		assigns ( * set ) -> parents [ 0 .. ( * set ) -> size ];	
   @
   @     frees \nothing;
   @
@@ -338,6 +345,8 @@ bool find ( int elementIndex, DisjointSet ** set, int * setID ) {
   @
   @     allocates \nothing;
   @
+  @		assigns ( * set ) -> parents [ 0 .. ( * set ) -> size ];	
+  @
   @     frees \nothing;
   @
   @     ensures \result == true;
@@ -395,7 +404,11 @@ bool unionSet ( int elementIndex1, int elementIndex2, DisjointSet ** set ) {
   @
   @ allocates \nothing;
   @
-  @ assigns \nothing;
+  @ assigns set;
+  @ assigns set -> capacity;
+  @ assigns set -> elements;
+  @ assigns set -> parents;
+  @ assigns set -> size;
   @
   @ frees set -> elements;
   @ frees set -> parents;
