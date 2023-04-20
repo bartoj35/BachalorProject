@@ -282,13 +282,13 @@ int makeSet ( int element, UnionFind ** set  ) {
   @
   @     frees \nothing;
   @ 
-  @     ensures \result == \false;
+  @     ensures \result == -1;
   @
   @     ensures \freeable_set { Here } ( set );
   @     ensures \valid_parts ( set );
   @	 	ensures \is_acyclic { Here } ( set );
 @*/
-bool find ( int elementIndex, UnionFind * set ) {
+int find ( int elementIndex, UnionFind * set ) {
 	if ( elementIndex >= 0 && elementIndex < set -> size ) {
 		int id = set -> parents [ elementIndex ];
 
@@ -323,11 +323,11 @@ bool find ( int elementIndex, UnionFind * set ) {
             //@ ghost maxToProcess = maxToProcess - 1;
 		}
 		
-		return true;
+		return id;
 	}
 	else {
 		fprintf ( stderr, "Invalid element index!\n" );
-		return false;
+		return -1;
 	}
 }
 
