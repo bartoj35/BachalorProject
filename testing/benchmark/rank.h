@@ -17,8 +17,8 @@ typedef struct TUnionFind {
 
 bool contains ( int element, UnionFind * set ) {
     for ( int i = 0; i < set -> size; i ++ ) {
-    	if ( set -> elements [ i ] == element ) {
-        	return true;
+	    if ( set -> elements [ i ] == element ) {
+    	    return true;
     	}
     }
     return false;
@@ -67,17 +67,17 @@ int makeSet ( int element, UnionFind ** set  ) {
 }
 
 
-bool find ( int elementIndex, UnionFind * set, int * setID ) {
+int find ( int elementIndex, UnionFind * set  ) {
     if ( elementIndex >= 0 && elementIndex < set -> size ) {
-    	* setID = set -> parents [ elementIndex ];
-		while ( ( * setID ) != set -> parents [ * setID ] ) {
-        	* setID = set -> parents [ * setID ];
+    	int id = set -> parents [ elementIndex ];
+		while ( id != set -> parents [ id ] ) {
+   	    	id = set -> parents [ id ];
     	}
-    	return true;
+    	return id;
     }
     else {
     	fprintf ( stderr, "Invalid element index!\n" );
-    	return false;
+    	return -1;
     }
 }
 
@@ -94,36 +94,33 @@ bool swap ( int * first, int * second ) {
 	}
 }
 
+bool unionSet ( int elementIndex1, int elementIndex2, UnionFind * set ) {
+	int firstParent = find ( elementIndex1, set );
+	int secondParent = find ( elementIndex2, set );
 
-bool unionSet ( int elementIndex1, int elementIndex2, UnionFind ** set ) {
-	if ( elementIndex1 >= 0 && elementIndex1 < ( * set ) -> size && elementIndex2 >= 0 && elementIndex2 < ( * set ) -> size ) {
-		int firstParent = 0, secondParent = 0;
-		find ( elementIndex1, * set, & firstParent );
-		find ( elementIndex2, * set, & secondParent );
-
-		if ( firstParent == secondParent ) {
-			return true;
+	if ( firstParent == -1 || secondParent == -1 ) {
+		if ( firstParent == -1 ) {
+			fprintf ( stderr, "Invalid index for first element!\n" );
 		}
-
-		if ( ( * set ) -> ranks [ firstParent ] > ( * set ) -> ranks [ secondParent ] ) {
-			swap ( & firstParent, & secondParent );
+		if ( secondParent == -1 ) {
+			fprintf ( stderr, "Invalid index for second element!\n" );
 		}
+		return false;
+	}
 
-		( * set ) -> parents [ firstParent ] = secondParent;
-		if ( ( * set ) -> ranks [ firstParent ] == ( * set ) -> ranks [ secondParent ] ) {
-			( * set ) -> ranks [ secondParent ] ++;
-		}
+	if ( firstParent == secondParent ) {
 		return true;
 	}
-	
-	if ( elementIndex1 < 0 || elementIndex1 >= ( * set ) -> size ) {
-		fprintf ( stderr, "Invalid index for first element!\n" );
+
+	if ( set -> ranks [ firstParent ] > set -> ranks [ secondParent ] ) {
+		swap ( & firstParent, & secondParent );
 	}
 
-	if ( elementIndex2 < 0 || elementIndex2 >= ( * set ) -> size ) {
-		fprintf ( stderr, "Invalid index for second element!\n" );
+	set -> parents [ firstParent ] = secondParent;
+	if ( set -> ranks [ firstParent ] == set -> ranks [ secondParent ] ) {
+		set -> ranks [ secondParent ] ++;
 	}
-	return false;
+	return true;
 }
 
 

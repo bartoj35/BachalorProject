@@ -24,6 +24,7 @@ bool contains ( int element, UnionFind * set ) {
 }
 
 
+  	
 int makeSet ( int element, UnionFind ** set  ) {
     if ( ( * set ) == NULL ) {
         * set = ( UnionFind * ) malloc ( 1 * sizeof ( UnionFind ) );
@@ -61,51 +62,49 @@ int makeSet ( int element, UnionFind ** set  ) {
 }
 
 
-bool find ( int elementIndex, UnionFind ** set, int * setID ) {
-	if ( elementIndex >= 0 && elementIndex < ( * set ) -> size ) {
-		* setID = ( * set ) -> parents [ elementIndex ];
+int find ( int elementIndex, UnionFind * set ) {
+	if ( elementIndex >= 0 && elementIndex < set -> size ) {
+		int id = set -> parents [ elementIndex ];
 
-		while ( ( * setID ) != ( * set ) -> parents [ * setID ] ) {
-			* setID = ( * set ) -> parents [ * setID ];
+		while ( id != set -> parents [ id ] ) {
+			id = set -> parents [ id ];
 		}
 
-		while ( ( * set ) -> parents [ elementIndex ] != ( * setID ) ) {
-			int tmp = ( * set ) -> parents [ elementIndex ];
-			( * set ) -> parents [ elementIndex ] = ( * setID );
+		while ( set -> parents [ elementIndex ] != id ) {
+			int tmp = set -> parents [ elementIndex ];
+			set -> parents [ elementIndex ] = id;
 			elementIndex = tmp;
 		}
 		
-		return true;
+		return id;
 	}
 	else {
 		fprintf ( stderr, "Invalid element index!\n" );
-		return false;
+		return -1;
 	}
 }
 
 
-bool unionSet ( int elementIndex1, int elementIndex2, UnionFind ** set ) {
-	if ( elementIndex1 >= 0 && elementIndex1 < ( * set ) -> size && elementIndex2 >= 0 && elementIndex2 < ( * set ) -> size ) {
-		int firstParent = 0, secondParent = 0;
-		find ( elementIndex1, set, & firstParent );
-		find ( elementIndex2, set, & secondParent );
+bool unionSet ( int elementIndex1, int elementIndex2, UnionFind * set ) {
+	int firstParent = find ( elementIndex1, set );
+    int secondParent = find ( elementIndex2, set );
 
-		if ( firstParent == secondParent ) {
-			return true;
-		}
-
-		( * set ) -> parents [ secondParent ] = elementIndex1;
+    if ( firstParent == -1 || secondParent == -1 ) {
+        if ( firstParent == -1 ) {
+            fprintf ( stderr, "Invalid index for first element!\n" );
+        }
+        if ( secondParent == -1 ) {
+            fprintf ( stderr, "Invalid index for second element!\n" );
+        }
+        return false;
+	}		
+	
+	if ( firstParent == secondParent ) {
 		return true;
 	}
-	
-	if ( elementIndex1 < 0 || elementIndex1 >= ( * set ) -> size ) {
-		fprintf ( stderr, "Invalid index for first element!\n" );
-	}
 
-	if ( elementIndex2 < 0 || elementIndex2 >= ( * set ) -> size ) {
-		fprintf ( stderr, "Invalid index for second element!\n" );
-	}
-	return false;
+	set -> parents [ secondParent ] = elementIndex1;
+	return true;
 }
 
 
