@@ -259,7 +259,7 @@ int makeSet ( int element, UnionFind ** set  ) {
 	}
 	else {
 		if ( contains ( element, * set ) == true ) {
-			printf ( "The element is already in set!\n" );
+			fprintf ( stderr, "The element is already in set!\n" );
 			return -1;
 		}
 
@@ -343,7 +343,7 @@ bool find ( int elementIndex, UnionFind * set, int * setID ) {
     	return true;
     }
     else {
-    	printf ( "Invalid element index!\n" );
+    	fprintf ( stderr, "Invalid element index!\n" );
     	return false;
     }
 }
@@ -465,11 +465,11 @@ bool unionSet ( int elementIndex1, int elementIndex2, UnionFind ** set ) {
 	}
 	
 	if ( elementIndex1 < 0 || elementIndex1 >= ( * set ) -> size ) {
-		printf ( "Invalid index for first element!\n" );
+		fprintf ( stderr, "Invalid index for first element!\n" );
 	}
 
 	if ( elementIndex2 < 0 || elementIndex2 >= ( * set ) -> size ) {
-		printf ( "Invalid index for second element!\n" );
+		fprintf ( stderr, "Invalid index for second element!\n" );
 	}
 	return false;
 }
