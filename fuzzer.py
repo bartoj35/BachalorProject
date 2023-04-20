@@ -14,12 +14,12 @@ def beggining():
 
 def union():
 	a, b = random.randint(0, set_size - 1), random.randint(0, set_size - 1)
-	file.write(f'\tunionSet ( {a}, {b}, & set );\n')
+	file.write(f'\tunionSet ( {a}, {b}, set );\n')
 
 
 def find():
 	a = random.randint(0, set_size - 1)
-	file.write(f'\tfind ( {a}, ARG, & value );\n')
+	file.write(f'\tfind ( {a}, set );\n')
 
 
 def value_var():

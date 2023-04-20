@@ -18,13 +18,13 @@ def beggining():
 def unions():
 	for i in range(UNION_COUNT):
 		a, b = random.randint(0, set_size - 1), random.randint(0, set_size - 1)
-		file.write(f'\tunionSet ( {a}, {b}, & set );\n')
+		file.write(f'\tunionSet ( {a}, {b}, set );\n')
 
 
 def finds():
 	for i in range(FIND_COUNT):
 		a = random.randint(0, set_size - 1)
-		file.write(f'\tfind ( {a}, ARG, & value );\n')
+		file.write(f'\tfind ( {a}, sett );\n')
 
 
 def value_var():
