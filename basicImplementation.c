@@ -408,13 +408,6 @@ void freeSet ( UnionFind * set ) {
 }
 
 
-void print ( UnionFind * set ) {
-	for ( int i = 0; i < set -> size; i ++ ) {
-		printf ( "%d: %d\n", i, set -> parents [ i ] ); 
-	}
-}
-
-
 /*@
   @	requires \true;
   @
@@ -476,8 +469,6 @@ int main ( void ) {
 	// test union too large left set index
 	unionSet ( 0, 10, & set );
 
-	print ( set );
-	
 	// test free
 	freeSet ( set );
 	//@ assert 0 == 1;
