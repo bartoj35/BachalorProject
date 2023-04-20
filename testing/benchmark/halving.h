@@ -70,7 +70,7 @@ int find ( int elementIndex, UnionFind * set ) {
 			set -> parents [ id ] = set -> parents [ set -> parents [ id ] ];
 			( id ) = set -> parents [ id ];
 		}
-		return id
+		return id;
 	}
 	else {
 		fprintf ( stderr, "Invalid element index!\n" );

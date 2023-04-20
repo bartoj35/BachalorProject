@@ -316,7 +316,7 @@ int find ( int elementIndex, UnionFind * set ) {
 			( id ) = set -> parents [ id ];
             //@ ghost maxToProcess = maxToProcess - 1;
 		}
-		return id
+		return id;
 	}
 	else {
 		fprintf ( stderr, "Invalid element index!\n" );
