@@ -251,34 +251,30 @@ int makeSet ( int element, UnionFind ** set  ) {
 
 
 /*@
-  @ requires set != \null;
-  @	requires \valid ( set );
-  @
-  @ requires \freeable_set { Here } ( * set );
-  @ requires \valid_parts ( * set );
-  @ requires \is_acyclic { Here } ( * set );
+  @ requires \freeable_set { Here } ( set );
+  @ requires \valid_parts ( set );
+  @ requires \is_acyclic { Here } ( set );
   @
   @ behavior valid:
-  @     assumes 0 <= elementIndex < ( * set ) -> size;
+  @     assumes 0 <= elementIndex < set -> size;
   @
   @     allocates \nothing;
   @
-  @     assigns * setID;
-  @		assigns ( * set ) -> parents [ 0 .. ( * set ) -> size ];
-  @		assigns ( * set ) -> parents [ 0 .. \old ( ( * set ) -> size ) ];
+  @		assigns set -> parents [ 0 .. set -> size ];
+  @		assigns set -> parents [ 0 .. \old ( set -> size ) ];
   @
   @     frees \nothing;
   @
-  @     ensures 0 <= * setID < ( * set ) -> size;
-  @     ensures ( * set ) -> parents [ * setID ] == * setID;
-  @     ensures \result == \true;
+  @     ensures 0 <= \result < set -> size;
+  @		ensures \result == find ( set, elementIndex, 0 );
+  @     ensures set -> parents [ \result ] == \result;
   @
-  @     ensures \freeable_set { Here } ( * set );
-  @     ensures \valid_parts ( * set );  
-  @	 	ensures \is_acyclic { Here } ( * set );
+  @     ensures \freeable_set { Here } ( set );
+  @     ensures \valid_parts ( set );  
+  @	 	ensures \is_acyclic { Here } ( set );
   @
   @ behavior not_valid:
-  @     assumes elementIndex < 0 || elementIndex >= ( * set ) -> size;
+  @     assumes elementIndex < 0 || elementIndex >= set -> size;
   @
   @     allocates \nothing;
   @
@@ -288,41 +284,41 @@ int makeSet ( int element, UnionFind ** set  ) {
   @ 
   @     ensures \result == \false;
   @
-  @     ensures \freeable_set { Here } ( * set );
-  @     ensures \valid_parts ( * set );
-  @	 	ensures \is_acyclic { Here } ( * set );
+  @     ensures \freeable_set { Here } ( set );
+  @     ensures \valid_parts ( set );
+  @	 	ensures \is_acyclic { Here } ( set );
 @*/
-bool find ( int elementIndex, UnionFind ** set, int * setID ) {
-	if ( elementIndex >= 0 && elementIndex < ( * set ) -> size ) {
-		* setID = ( * set ) -> parents [ elementIndex ];
+bool find ( int elementIndex, UnionFind * set ) {
+	if ( elementIndex >= 0 && elementIndex < set -> size ) {
+		int id = set -> parents [ elementIndex ];
 
-        //@ ghost int maxToProcess = ( * set ) -> size;
+        //@ ghost int maxToProcess = set -> size;
         /*@
-          @ loop invariant ( * setID ) >= 0;
-          @ loop invariant ( * setID ) < ( * set ) -> size;
+          @ loop invariant id >= 0;
+          @ loop invariant id < set -> size;
  		  @
-          @ loop assigns * setID;
+          @ loop assigns id;
  		  @
           @ loop variant maxToProcess; 
         @*/
-		while ( ( * setID ) != ( * set ) -> parents [ * setID ] ) {
-			* setID = ( * set ) -> parents [ * setID ];
+		while ( id != set -> parents [ id ] ) {
+			id = set -> parents [ id ];
             //@ ghost maxToProcess = maxToProcess - 1;
 		}
 
-        //@ ghost maxToProcess = ( * set ) -> size;
+        //@ ghost maxToProcess = set -> size;
         /*@
-          @ loop invariant ( * setID ) >= 0;
-          @ loop invariant ( * setID ) < ( * set ) -> size;
+          @ loop invariant id >= 0;
+          @ loop invariant id < set -> size;
  		  @
 		  @ loop assigns elementIndex;
-		  @ loop assigns ( * set ) -> parents [ \at ( elementIndex, LoopCurrent ) ];
+		  @ loop assigns set -> parents [ \at ( elementIndex, LoopCurrent ) ];
  		  @
           @ loop variant maxToProcess; 
   		@*/
-		while ( ( * set ) -> parents [ elementIndex ] != ( * setID ) ) {
-			int tmp = ( * set ) -> parents [ elementIndex ];
-			( * set ) -> parents [ elementIndex ] = ( * setID );
+		while ( set -> parents [ elementIndex ] != id ) {
+			int tmp = set -> parents [ elementIndex ];
+			set -> parents [ elementIndex ] = id;
 			elementIndex = tmp;
             //@ ghost maxToProcess = maxToProcess - 1;
 		}
@@ -337,32 +333,29 @@ bool find ( int elementIndex, UnionFind ** set, int * setID ) {
 
 
 /*@
-  @ requires set != \null;
-  @ requires \valid ( set );
-  @
-  @ requires \freeable_set { Here } ( * set );
-  @ requires \valid_parts ( * set );
-  @ requires \is_acyclic { Here } ( * set );
+  @ requires \freeable_set { Here } ( set );
+  @ requires \valid_parts ( set );
+  @ requires \is_acyclic { Here } ( set );
   @
   @ behavior valid:
-  @     assumes 0 <= elementIndex1 < ( * set ) -> size;
-  @     assumes 0 <= elementIndex2 < ( * set ) -> size;
+  @     assumes 0 <= elementIndex1 < set -> size;
+  @     assumes 0 <= elementIndex2 < set -> size;
   @
   @     allocates \nothing;
   @
-  @		assigns ( * set ) -> parents [ 0 .. ( * set ) -> size ];	
+  @		assigns set -> parents [ 0 .. set -> size ];	
   @
   @     frees \nothing;
   @
   @     ensures \result == true;
   @
-  @     ensures \freeable_set { Here } ( * set );
-  @     ensures \valid_parts ( * set );
-  @	 	ensures \is_acyclic { Here } ( * set );
-  @	 	ensures \correctly_unioned { Pre, Here } ( * set, elementIndex1, elementIndex2 );
+  @     ensures \freeable_set { Here } ( set );
+  @     ensures \valid_parts ( set );
+  @	 	ensures \is_acyclic { Here } ( set );
+  @	 	ensures \correctly_unioned { Pre, Here } ( set, elementIndex1, elementIndex2 );
   @
   @ behavior invalid_index:
-  @     assumes ! ( 0 <= elementIndex1 < ( * set ) -> size ) || ! ( 0 <= elementIndex2 < ( * set ) -> size );
+  @     assumes ! ( 0 <= elementIndex1 < set -> size ) || ! ( 0 <= elementIndex2 < set -> size );
   @
   @     allocates \nothing;
   @
@@ -372,34 +365,32 @@ bool find ( int elementIndex, UnionFind ** set, int * setID ) {
   @
   @     ensures \result == \false;
   @
-  @     ensures \freeable_set { Here } ( * set );
-  @     ensures \valid_parts ( * set );
-  @	 	ensures \is_acyclic { Here } ( * set );
+  @     ensures \freeable_set { Here } ( set );
+  @     ensures \valid_parts ( set );
+  @	 	ensures \is_acyclic { Here } ( set );
   @ 
   @ disjoint behaviors; 
 @*/
-bool unionSet ( int elementIndex1, int elementIndex2, UnionFind ** set ) {
-	if ( elementIndex1 >= 0 && elementIndex1 < ( * set ) -> size && elementIndex2 >= 0 && elementIndex2 < ( * set ) -> size ) {
-		int firstParent = 0, secondParent = 0;
-		find ( elementIndex1, set, & firstParent );
-		find ( elementIndex2, set, & secondParent );
+bool unionSet ( int elementIndex1, int elementIndex2, UnionFind * set ) {
+	int firstParent = find ( elementIndex1, set );
+    int secondParent = find ( elementIndex2, set );
 
-		if ( firstParent == secondParent ) {
-			return true;
-		}
-
-		( * set ) -> parents [ secondParent ] = elementIndex1;
+    if ( firstParent == -1 || secondParent == -1 ) {
+        if ( firstParent == -1 ) {
+            fprintf ( stderr, "Invalid index for first element!\n" );
+        }
+        if ( secondParent == -1 ) {
+            fprintf ( stderr, "Invalid index for second element!\n" );
+        }
+        return false;
+	}		
+	
+	if ( firstParent == secondParent ) {
 		return true;
 	}
-	
-	if ( elementIndex1 < 0 || elementIndex1 >= ( * set ) -> size ) {
-		fprintf ( stderr, "Invalid index for first element!\n" );
-	}
 
-	if ( elementIndex2 < 0 || elementIndex2 >= ( * set ) -> size ) {
-		fprintf ( stderr, "Invalid index for second element!\n" );
-	}
-	return false;
+	set -> parents [ secondParent ] = elementIndex1;
+	return true;
 }
 
 
@@ -461,36 +452,36 @@ int main ( void ) {
 	
 	int value = 0;
 	// find element on valid index
-	find ( 1, & set, & value );
+	find ( 1, set );
 	
 	// find element on negative index
-	find ( -333, & set, & value );
+	find ( -333, set );
 	
 	// find element on too large index
-	find ( 10, & set, & value );
+	find ( 10, set );
 
 	// test union	
-	unionSet ( 0, 1, & set );
-	unionSet ( 1, 2, & set );
-	unionSet ( 0, 2, & set );
+	unionSet ( 0, 1, set );
+	unionSet ( 1, 2, set );
+	unionSet ( 0, 2, set );
 	
 	// find with compression
-	find ( 2, & set, & value );
+	find ( 2, set );
 
 	// test union of same sets
-	unionSet ( 0, 0, & set );
+	unionSet ( 0, 0, set );
 	
 	// test union negative left set index
-	unionSet ( -1, 0, & set );
+	unionSet ( -1, 0, set );
 	
 	// test union too large left set index
-	unionSet ( 10, 0, & set );
+	unionSet ( 10, 0, set );
 	
 	// test union negative right set index
-	unionSet ( 0, -1, & set );
+	unionSet ( 0, -1, set );
 
 	// test union too large left set index
-	unionSet ( 0, 10, & set );
+	unionSet ( 0, 10, set );
 	
 	// test free
 	freeSet ( set );
