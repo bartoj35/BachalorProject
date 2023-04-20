@@ -130,7 +130,6 @@ bool contains ( int element, UnionFind * set ) {
 
 /*@
   @ requires set != \null;
-  @ requires \valid ( set );
   @
   @ requires \freeable_set { Here } ( * set );
   @ requires \valid_parts ( * set );
@@ -297,13 +296,13 @@ int makeSet ( int element, UnionFind ** set  ) {
   @
   @     allocates \nothing;
   @
-  @     assigns * setID;
+  @     assigns \nothing;
   @
   @     frees \nothing;
   @
-  @     ensures 0 <= * setID < set -> size;
-  @     ensures set -> parents [ * setID ] == * setID;
-  @     ensures \result == \true;
+  @     ensures 0 <= \result < set -> size;
+  @		ensures \result == find ( set, elementIndex, 0 );
+  @     ensures set -> parents [ \result ] == \result;
   @
   @		ensures \freeable_set { Here } ( set );
   @ 	ensures \valid_parts ( set );
@@ -319,7 +318,7 @@ int makeSet ( int element, UnionFind ** set  ) {
   @
   @     frees \nothing;
   @ 
-  @     ensures \result == \false;
+  @     ensures \result == -1;
   @
   @		ensures \freeable_set { Here } ( set );
   @ 	ensures \valid_parts ( set );
@@ -327,24 +326,24 @@ int makeSet ( int element, UnionFind ** set  ) {
   @ 	ensures \is_acyclic { Here } ( set );
   @
 @*/
-bool find ( int elementIndex, UnionFind * set, int * setID ) {
+int find ( int elementIndex, UnionFind * set  ) {
     if ( elementIndex >= 0 && elementIndex < set -> size ) {
-    	* setID = set -> parents [ elementIndex ];
+    	int id = set -> parents [ elementIndex ];
     	/*@
-      	  @ loop invariant 0 <= * setID < set -> size;
+      	  @ loop invariant 0 <= id < set -> size;
 		  @
-      	  @ loop assigns * setID;
+      	  @ loop assigns id;
 		  @
-      	  @ loop variant set -> size - set -> ranks [ * setID ];
+      	  @ loop variant set -> size - set -> ranks [ id ];
     	@*/
-		while ( ( * setID ) != set -> parents [ * setID ] ) {
-   	    	* setID = set -> parents [ * setID ];
+		while ( id != set -> parents [ id ] ) {
+   	    	id = set -> parents [ id ];
     	}
-    	return true;
+    	return id;
     }
     else {
     	fprintf ( stderr, "Invalid element index!\n" );
-    	return false;
+    	return -1;
     }
 }
 
@@ -398,34 +397,31 @@ bool swap ( int * first, int * second ) {
 }
 
 /*@
-  @ requires set != \null;
-  @ requires \valid ( set );
-  @
-  @	requires \freeable_set { Here } ( * set );
-  @	requires \valid_parts ( * set );
-  @ requires \valid_ranks ( * set );
-  @ requires \is_acyclic { Here } ( * set );
+  @	requires \freeable_set { Here } ( set );
+  @	requires \valid_parts ( set );
+  @ requires \valid_ranks ( set );
+  @ requires \is_acyclic { Here } ( set );
   @
   @ behavior valid:
-  @     assumes 0 <= elementIndex1 < ( * set ) -> size;
-  @     assumes 0 <= elementIndex2 < ( * set ) -> size;
+  @     assumes 0 <= elementIndex1 < set -> size;
+  @     assumes 0 <= elementIndex2 < set -> size;
   @
   @     allocates \nothing;
   @
-  @		assigns ( * set ) -> parents [ 0 .. ( * set ) -> size ];	
-  @		assigns ( * set ) -> ranks [ 0 .. ( * set ) -> size ];
+  @		assigns set -> parents [ 0 .. set -> size ];	
+  @		assigns set -> ranks [ 0 .. set -> size ];
   @
   @     frees \nothing;
   @
   @     ensures \result == true;
   @
-  @		ensures \freeable_set { Here } ( * set );
-  @		ensures \valid_parts ( * set );
-  @ 	ensures \valid_ranks ( * set );
-  @ 	ensures \is_acyclic { Here } ( * set );
+  @		ensures \freeable_set { Here } ( set );
+  @		ensures \valid_parts ( set );
+  @ 	ensures \valid_ranks ( set );
+  @ 	ensures \is_acyclic { Here } ( set );
   @     
   @ behavior invalid_index:
-  @     assumes ! ( 0 <= elementIndex1 < ( * set ) -> size ) || ! ( 0 <= elementIndex2 < ( * set ) -> size );
+  @     assumes ! ( 0 <= elementIndex1 < set -> size ) || ! ( 0 <= elementIndex2 < set -> size );
   @
   @     allocates \nothing;
   @
@@ -435,43 +431,41 @@ bool swap ( int * first, int * second ) {
   @
   @     ensures \result == \false;
   @
-  @		ensures \freeable_set { Here } ( * set );
-  @		ensures \valid_parts ( * set );
-  @ 	ensures \valid_ranks ( * set );
-  @ 	ensures \is_acyclic { Here } ( * set );
-  @ 	ensures \correctly_unioned { Pre, Here } ( * set, elementIndex1, elementIndex2 );
+  @		ensures \freeable_set { Here } ( set );
+  @		ensures \valid_parts ( set );
+  @ 	ensures \valid_ranks ( set );
+  @ 	ensures \is_acyclic { Here } ( set );
+  @ 	ensures \correctly_unioned { Pre, Here } ( set, elementIndex1, elementIndex2 );
   @ 
   @ disjoint behaviors; 
 @*/
-bool unionSet ( int elementIndex1, int elementIndex2, UnionFind ** set ) {
-	if ( elementIndex1 >= 0 && elementIndex1 < ( * set ) -> size && elementIndex2 >= 0 && elementIndex2 < ( * set ) -> size ) {
-		int firstParent = 0, secondParent = 0;
-		find ( elementIndex1, * set, & firstParent );
-		find ( elementIndex2, * set, & secondParent );
+bool unionSet ( int elementIndex1, int elementIndex2, UnionFind * set ) {
+	int firstParent = find ( elementIndex1, set );
+	int secondParent = find ( elementIndex2, set );
 
-		if ( firstParent == secondParent ) {
-			return true;
+	if ( firstParent == -1 || secondParent == -1 ) {
+		if ( firstParent == -1 ) {
+			fprintf ( stderr, "Invalid index for first element!\n" );
 		}
+		if ( secondParent == -1 ) {
+			fprintf ( stderr, "Invalid index for second element!\n" );
+		}
+		return false;
+	}
 
-		if ( ( * set ) -> ranks [ firstParent ] > ( * set ) -> ranks [ secondParent ] ) {
-			swap ( & firstParent, & secondParent );
-		}
-
-		( * set ) -> parents [ firstParent ] = secondParent;
-		if ( ( * set ) -> ranks [ firstParent ] == ( * set ) -> ranks [ secondParent ] ) {
-			( * set ) -> ranks [ secondParent ] ++;
-		}
+	if ( firstParent == secondParent ) {
 		return true;
 	}
-	
-	if ( elementIndex1 < 0 || elementIndex1 >= ( * set ) -> size ) {
-		fprintf ( stderr, "Invalid index for first element!\n" );
+
+	if ( set -> ranks [ firstParent ] > set -> ranks [ secondParent ] ) {
+		swap ( & firstParent, & secondParent );
 	}
 
-	if ( elementIndex2 < 0 || elementIndex2 >= ( * set ) -> size ) {
-		fprintf ( stderr, "Invalid index for second element!\n" );
+	set -> parents [ firstParent ] = secondParent;
+	if ( set -> ranks [ firstParent ] == set -> ranks [ secondParent ] ) {
+		set -> ranks [ secondParent ] ++;
 	}
-	return false;
+	return true;
 }
 
 
@@ -537,37 +531,37 @@ int main ( void ) {
 	
 	int value = 0;
 	// find element on valid index
-	find ( 1, set, & value );
+	find ( 1, set );
 	
 	// find element on negative index
-	find ( -333, set, & value );
+	find ( -333, set );
 	
 	// find element on too large index
-	find ( 10, set, & value );
+	find ( 10, set );
 
 	// test union	
-	unionSet ( 0, 1, & set );
-	unionSet ( 2, 3, & set );
-	unionSet ( 1, 3, & set );
+	unionSet ( 0, 1, set );
+	unionSet ( 2, 3, set );
+	unionSet ( 1, 3, set );
 	
 	// test union of larger set to smaller
-	unionSet ( 0, 5, & set );
+	unionSet ( 0, 5, set );
 	
 
 	// test union of same sets
-	unionSet ( 0, 0, & set );
+	unionSet ( 0, 0, set );
 	
 	// test union negative left set index
-	unionSet ( -1, 0, & set );
+	unionSet ( -1, 0, set );
 	
 	// test union too large left set index
-	unionSet ( 10, 0, & set );
+	unionSet ( 10, 0, set );
 	
 	// test union negative right set index
-	unionSet ( 0, -1, & set );
+	unionSet ( 0, -1, set );
 
 	// test union too large left set index
-	unionSet ( 0, 10, & set );
+	unionSet ( 0, 10, set );
 
 	// test swap
    	int a = 1, b = 2;
