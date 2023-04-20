@@ -261,14 +261,13 @@ int makeSet ( int element, UnionFind ** set  ) {
   @
   @		allocates \nothing;
   @
-  @		assigns * setID;
+  @		assigns \nothing;
   @
   @		frees \nothing;
   @
-  @		ensures 0 <= * setID < set -> size;
-  @		ensures * setID == find ( set, elementIndex, 0 );
-  @		ensures set -> parents [ * setID ] == * setID;
-  @		ensures \result == \true;
+  @		ensures 0 <= \result < set -> size;
+  @		ensures \result == find ( set, elementIndex, 0 );
+  @		ensures set -> parents [ \result ] == \result;
   @
   @     ensures \freeable_set { Here } ( set );
   @     ensures \valid_parts ( set );
@@ -283,7 +282,7 @@ int makeSet ( int element, UnionFind ** set  ) {
   @
   @		frees \nothing;
   @
-  @		ensures \result == \false;
+  @		ensures \result == -1;
   @
   @     ensures \freeable_set { Here } ( set );
   @     ensures \valid_parts ( set );
@@ -291,28 +290,28 @@ int makeSet ( int element, UnionFind ** set  ) {
   @
   @ disjoint behaviors;
 @*/
-bool find ( int elementIndex, UnionFind * set, int * setID ) {
+int find ( int elementIndex, UnionFind * set ) {
 	if ( elementIndex >= 0 && elementIndex < set -> size ) {
-    	* setID = set -> parents [ elementIndex ];
+    	int id = set -> parents [ elementIndex ];
 		//@ ghost int maxToProcess = set -> size;
 		/*@
-      	  @ loop invariant ( * setID ) >= 0;
-      	  @ loop invariant ( * setID ) < set -> size;
+      	  @ loop invariant id >= 0;
+      	  @ loop invariant id < set -> size;
  		  @
-      	  @ loop assigns * setID;
+      	  @ loop assigns id;
 		  @
       	  @ loop variant maxToProcess; 
     	@*/
-    	while ( ( * setID ) != set -> parents [ * setID ] ) {
-    		* setID = set -> parents [ * setID ];
+    	while ( id != set -> parents [ id ] ) {
+    		id = set -> parents [ id ];
     		//@ ghost maxToProcess = maxToProcess - 1;
 		}
 
-    	return true;
+    	return id;
     }
     else {
     	fprintf ( stderr, "Invalid element index!\n" );
-    	return false;
+    	return -1;
 	}
 }
 
@@ -360,25 +359,24 @@ bool find ( int elementIndex, UnionFind * set, int * setID ) {
   @ disjoint behaviors; 
 @*/
 bool unionSet ( int elementIndex1, int elementIndex2, UnionFind ** set ) {
-    if ( elementIndex1 >= 0 && elementIndex1 < ( * set ) -> size && elementIndex2 >= 0 && elementIndex2 < ( * set ) -> size ) {
-        int firstParent = 0, secondParent = 0;
-        find ( elementIndex1, * set, & firstParent );
-        find ( elementIndex2, * set, & secondParent );
-        if ( firstParent == secondParent ) {
-            return true;
-        }
-        ( * set ) -> parents [ secondParent ] = elementIndex1;
-        return true;
-    }
+    int firstParent = find ( elementIndex1, * set );
+	int secondParent = find ( elementIndex2, * set );
     
-	if ( elementIndex1 < 0 || elementIndex1 >= ( * set ) -> size ) {
-        fprintf ( stderr, "Invalid index for first element!\n" );
+	if ( firstParent == -1 || secondParent == -1 ) {
+		if ( firstParent == -1 ) {
+        	fprintf ( stderr, "Invalid index for first element!\n" );
+		}
+        if ( secondParent == -1 ) {
+			fprintf ( stderr, "Invalid index for second element!\n" );
+		}
+		return false;
+	}
+
+	if ( firstParent == secondParent ) {
+    	return true;
     }
-    
-	if ( elementIndex2 < 0 || elementIndex2 >= ( * set ) -> size ) {
-        fprintf ( stderr, "Invalid index for second element!\n" );
-    }
-    return false;
+    ( * set ) -> parents [ secondParent ] = elementIndex1;
+    return true;
 }
 
 
@@ -447,13 +445,13 @@ int main ( void ) {
 	
 	int value = 0;
 	// find element on valid index
-	find ( 1, set, & value );
+	find ( 1, set );
 	
 	// find element on negative index
-	find ( -333, set, & value );
+	find ( -333, set );
 	
 	// find element on too large index
-	find ( 10, set, & value );
+	find ( 10, set );
 
 	// test union	
 	unionSet ( 0, 1, & set );
@@ -461,7 +459,7 @@ int main ( void ) {
 	unionSet ( 1, 2, & set );
 	unionSet ( 3, 0, & set );
 
-	find ( 1, set, & value );
+	find ( 1, set );
 
 	// test union of same sets
 	unionSet ( 0, 0, & set );
@@ -477,6 +475,8 @@ int main ( void ) {
 
 	// test union too large left set index
 	unionSet ( 0, 10, & set );
+
+	print ( set );
 	
 	// test free
 	freeSet ( set );
