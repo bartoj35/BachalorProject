@@ -61,42 +61,41 @@ int makeSet ( int element, UnionFind ** set  ) {
 }
 
 
-bool find ( int elementIndex, UnionFind * set, int * setID ) {
+int find ( int elementIndex, UnionFind * set ) {
 	if ( elementIndex >= 0 && elementIndex < set -> size ) {
-	    * setID = set -> parents [ elementIndex ];
-    	while ( ( * setID ) != set -> parents [ * setID ] ) {
-    		* setID = set -> parents [ * setID ];
-		}
+    	int id = set -> parents [ elementIndex ];
+    	while ( id != set -> parents [ id ] ) {
+		id = set -> parents [ id ];
+	}
 
-    	return true;
+    	return id;
     }
     else {
     	fprintf ( stderr, "Invalid element index!\n" );
-    	return false;
+    	return -1;
 	}
 }
 
 
-bool unionSet ( int elementIndex1, int elementIndex2, UnionFind ** set ) {
-    if ( elementIndex1 >= 0 && elementIndex1 < ( * set ) -> size && elementIndex2 >= 0 && elementIndex2 < ( * set ) -> size ) {
-        int firstParent = 0, secondParent = 0;
-        find ( elementIndex1, * set, & firstParent );
-        find ( elementIndex2, * set, & secondParent );
-        if ( firstParent == secondParent ) {
-            return true;
-        }
-        ( * set ) -> parents [ secondParent ] = elementIndex1;
-        return true;
-    }
+bool unionSet ( int elementIndex1, int elementIndex2, UnionFind * set ) {
+    int firstParent = find ( elementIndex1, set );
+	int secondParent = find ( elementIndex2, set );
     
-	if ( elementIndex1 < 0 || elementIndex1 >= ( * set ) -> size ) {
-        fprintf ( stderr, "Invalid index for first element!\n" );
+	if ( firstParent == -1 || secondParent == -1 ) {
+		if ( firstParent == -1 ) {
+        	fprintf ( stderr, "Invalid index for first element!\n" );
+		}
+        if ( secondParent == -1 ) {
+			fprintf ( stderr, "Invalid index for second element!\n" );
+		}
+		return false;
+	}
+
+	if ( firstParent == secondParent ) {
+    	return true;
     }
-    
-	if ( elementIndex2 < 0 || elementIndex2 >= ( * set ) -> size ) {
-        fprintf ( stderr, "Invalid index for second element!\n" );
-    }
-    return false;
+    set -> parents [ secondParent ] = elementIndex1;
+    return true;
 }
 
 
@@ -123,28 +122,27 @@ void testValid ( void ) {
 	UnionFind * set = NULL;
 
 	for ( int i = 1; i <= 10; i ++ ) {
-    	makeSet ( i, & set );
+    		makeSet ( i, & set );
 	}
 
-	int setIndex = 0;
 
-	find ( 1, set, & setIndex );
-	find ( 2, set, & setIndex );
-	find ( 3, set, & setIndex );
-	find ( 4, set, & setIndex );
-	find ( 5, set, & setIndex );
-	find ( 6, set, & setIndex );
-	find ( 7, set, & setIndex );
-	find ( 8, set, & setIndex );
-	find ( 9, set, & setIndex );
-	find ( 10, set, & setIndex );
+	find ( 1, set );
+	find ( 2, set );
+	find ( 3, set );
+	find ( 4, set );
+	find ( 5, set );
+	find ( 6, set );
+	find ( 7, set );
+	find ( 8, set );
+	find ( 9, set );
+	find ( 10, set );
 
-	unionSet ( 0, 1, & set );
-	unionSet ( 0, 8, & set );
-	unionSet ( 8, 9, & set );
-	unionSet ( 6, 7, & set );
-	unionSet ( 2, 3, & set );
-	unionSet ( 2, 5, & set );
+	unionSet ( 0, 1, set );
+	unionSet ( 0, 8, set );
+	unionSet ( 8, 9, set );
+	unionSet ( 6, 7, set );
+	unionSet ( 2, 3, set );
+	unionSet ( 2, 5, set );
 
 	print ( set );
 	
@@ -161,16 +159,14 @@ void testEdgeCases ( void ) {
     
 	makeSet ( 5, & set );
 
-	int setIndex = 0;
+	find ( -1, set );
+	find ( 0, set );
+	find ( 100, set );
 
-	find ( -1, set, & setIndex );
-	find ( 0, set, & setIndex );
-	find ( 100, set, & setIndex );
-
-	unionSet ( -1, 1, & set );
-	unionSet ( 1, -1, & set );
-	unionSet ( -1, -1, & set );
-	unionSet ( 1, 1, & set );
+	unionSet ( -1, 1, set );
+	unionSet ( 1, -1, set );
+	unionSet ( -1, -1, set );
+	unionSet ( 1, 1, set );
 
 	print ( set );
 	
