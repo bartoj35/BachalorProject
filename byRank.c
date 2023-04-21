@@ -94,9 +94,9 @@ typedef struct TUnionFind {
 
 
 /*@
-  @ requires \freeable_set { Here } ( set );
+  @ requires \freeable_set { Pre } ( set );
   @ requires \valid_parts ( set );
-  @ requires \is_acyclic { Here } ( set );
+  @ requires \is_acyclic { Pre } ( set );
   @  
   @ allocates \nothing;
   @
@@ -107,9 +107,9 @@ typedef struct TUnionFind {
   @ ensures \result == \true ==> \exists integer index; 0 <= index < set -> size ==> set -> elements [ index ] == element;  
   @ ensures \result == \false ==> \forall integer index; 0 <= index < set -> size ==> set -> elements [ index ] != element;  
   @
-  @ ensures \freeable_set { Here } ( set );
+  @ ensures \freeable_set { Post } ( set );
   @ ensures \valid_parts ( set );
-  @ ensures \is_acyclic { Here } ( set );
+  @ ensures \is_acyclic { Post } ( set );
 @*/
 bool contains ( int element, UnionFind * set ) {
     /*@
@@ -131,10 +131,10 @@ bool contains ( int element, UnionFind * set ) {
 /*@
   @ requires set != \null;
   @
-  @ requires \freeable_set { Here } ( * set );
+  @ requires \freeable_set { Pre } ( * set );
   @ requires \valid_parts ( * set );
   @	requires \valid_ranks ( * set );
-  @ requires \is_acyclic { Here } ( * set );
+  @ requires \is_acyclic { Pre } ( * set );
   @
   @ behavior no_set:
   @		assumes * set == \null;
@@ -161,14 +161,14 @@ bool contains ( int element, UnionFind * set ) {
   @		ensures ( * set ) -> ranks [ 0 ] == 0;
   @		ensures \result == 0;
   @
-  @		ensures \freeable_set { Here } ( * set );
+  @		ensures \freeable_set { Post } ( * set );
   @ 	ensures \valid_parts ( * set );
   @ 	ensures \valid_ranks ( * set );
-  @ 	ensures \is_acyclic { Here } ( * set );
+  @ 	ensures \is_acyclic { Post } ( * set );
   @
   @ behavior resize_set:	
   @		assumes * set != \null;
-  @		assumes \freeable { Here } ( * set );
+  @		assumes \freeable { Pre } ( * set );
   @		assumes ( * set ) -> size >= ( * set ) -> capacity; 
   @		assumes \forall integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] != element;
   @		
@@ -194,14 +194,14 @@ bool contains ( int element, UnionFind * set ) {
   @		ensures ( * set ) -> ranks [ \old ( ( * set ) -> size ) ] == 0; 
   @		ensures \result == \old ( ( * set ) -> size );
   @
-  @		ensures \freeable_set { Here } ( * set );
+  @		ensures \freeable_set { Post } ( * set );
   @ 	ensures \valid_parts ( * set );
   @ 	ensures \valid_ranks ( * set );
-  @ 	ensures \is_acyclic { Here } ( * set );
+  @ 	ensures \is_acyclic { Post } ( * set );
   @	
   @ behavior no_resize_set:	
   @		assumes * set != \null;
-  @		assumes \freeable { Here } ( * set );
+  @		assumes \freeable { Pre } ( * set );
   @		assumes ( * set ) -> size < ( * set ) -> capacity; 
   @		assumes \forall integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] != element;
   @		
@@ -219,13 +219,13 @@ bool contains ( int element, UnionFind * set ) {
   @		ensures ( * set ) -> ranks [ \old ( ( * set ) -> size ) ] == 0; 
   @		ensures \result == \old ( ( * set ) -> size );
   @
-  @		ensures \freeable_set { Here } ( * set );
+  @		ensures \freeable_set { Post } ( * set );
   @ 	ensures \valid_parts ( * set );
   @ 	ensures \valid_ranks ( * set );
-  @ 	ensures \is_acyclic { Here } ( * set );
+  @ 	ensures \is_acyclic { Post } ( * set );
   @
   @ behavior in_set:	
-  @		assumes * set != \null && \freeable { Here } ( * set );
+  @		assumes * set != \null && \freeable { Pre } ( * set );
   @		assumes \exists integer index; 0 <= index < ( * set ) -> size ==> ( * set ) -> elements [ index ] == element;
   @		
   @		allocates \nothing;
@@ -236,10 +236,10 @@ bool contains ( int element, UnionFind * set ) {
   @
   @		ensures \result == -1;
   @
-  @		ensures \freeable_set { Here } ( * set );
+  @		ensures \freeable_set { Post } ( * set );
   @		ensures \valid_parts ( * set );
   @ 	ensures \valid_ranks ( * set );
-  @ 	ensures \is_acyclic { Here } ( * set );
+  @ 	ensures \is_acyclic { Post } ( * set );
   @ 
   @ complete behaviors; 
 */
@@ -286,10 +286,10 @@ int makeSet ( int element, UnionFind ** set  ) {
 
 
 /*@
-  @ requires \freeable_set { Here } ( set );
+  @ requires \freeable_set { Pre } ( set );
   @	requires \valid_parts ( set );
   @ requires \valid_ranks ( set );
-  @ requires \is_acyclic { Here } ( set );
+  @ requires \is_acyclic { Pre } ( set );
   @
   @ behavior valid:
   @     assumes 0 <= elementIndex < set -> size;
@@ -304,10 +304,10 @@ int makeSet ( int element, UnionFind ** set  ) {
   @		ensures \result == find ( set, elementIndex, 0 );
   @     ensures set -> parents [ \result ] == \result;
   @
-  @		ensures \freeable_set { Here } ( set );
+  @		ensures \freeable_set { Post } ( set );
   @ 	ensures \valid_parts ( set );
   @ 	ensures \valid_ranks ( set );
-  @ 	ensures \is_acyclic { Here } ( set );
+  @ 	ensures \is_acyclic { Post } ( set );
   @
   @ behavior not_valid:
   @     assumes elementIndex < 0 || elementIndex >= set -> size;
@@ -320,10 +320,10 @@ int makeSet ( int element, UnionFind ** set  ) {
   @ 
   @     ensures \result == -1;
   @
-  @		ensures \freeable_set { Here } ( set );
+  @		ensures \freeable_set { Post } ( set );
   @ 	ensures \valid_parts ( set );
   @ 	ensures \valid_ranks ( set );
-  @ 	ensures \is_acyclic { Here } ( set );
+  @ 	ensures \is_acyclic { Post } ( set );
   @
 @*/
 int find ( int elementIndex, UnionFind * set  ) {
@@ -397,10 +397,10 @@ bool swap ( int * first, int * second ) {
 }
 
 /*@
-  @	requires \freeable_set { Here } ( set );
+  @	requires \freeable_set { Pre } ( set );
   @	requires \valid_parts ( set );
   @ requires \valid_ranks ( set );
-  @ requires \is_acyclic { Here } ( set );
+  @ requires \is_acyclic { Pre } ( set );
   @
   @ behavior valid:
   @     assumes 0 <= elementIndex1 < set -> size;
@@ -415,10 +415,10 @@ bool swap ( int * first, int * second ) {
   @
   @     ensures \result == true;
   @
-  @		ensures \freeable_set { Here } ( set );
+  @		ensures \freeable_set { Post } ( set );
   @		ensures \valid_parts ( set );
   @ 	ensures \valid_ranks ( set );
-  @ 	ensures \is_acyclic { Here } ( set );
+  @ 	ensures \is_acyclic { Post } ( set );
   @     
   @ behavior invalid_index:
   @     assumes ! ( 0 <= elementIndex1 < set -> size ) || ! ( 0 <= elementIndex2 < set -> size );
@@ -431,11 +431,11 @@ bool swap ( int * first, int * second ) {
   @
   @     ensures \result == \false;
   @
-  @		ensures \freeable_set { Here } ( set );
+  @		ensures \freeable_set { Post } ( set );
   @		ensures \valid_parts ( set );
   @ 	ensures \valid_ranks ( set );
-  @ 	ensures \is_acyclic { Here } ( set );
-  @ 	ensures \correctly_unioned { Pre, Here } ( set, elementIndex1, elementIndex2 );
+  @ 	ensures \is_acyclic { Post } ( set );
+  @ 	ensures \correctly_unioned { Pre, Post } ( set, elementIndex1, elementIndex2 );
   @ 
   @ disjoint behaviors; 
 @*/
@@ -470,10 +470,10 @@ bool unionSet ( int elementIndex1, int elementIndex2, UnionFind * set ) {
 
 
 /*@
-  @ requires \freeable_set { Here } ( set );
+  @ requires \freeable_set { Pre } ( set );
   @ requires \valid_parts ( set );
   @ requires \valid_ranks ( set );
-  @ requires \is_acyclic { Here } ( set );
+  @ requires \is_acyclic { Pre } ( set );
   @
   @ allocates \nothing;
   @
