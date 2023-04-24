@@ -16,7 +16,3 @@ We commonly find various code implementations online, which we need to use in ou
 Framework contains a lot of plugins for various analysis, from generating annotations about possible overflow of the variables to verification of the concurent programs.
 
 
-## TODO
-* [Flush cache](https://www.tecmint.com/clear-ram-memory-cache-buffer-and-swap-space-on-linux/) before every benchmark
-* Use benchmark utilities (for example: [perf](https://perf.wiki.kernel.org/index.php/Main_Page))
-* Try symbolic execution engine overall, but ask about the cluster usage
