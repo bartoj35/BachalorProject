@@ -1,8 +1,6 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{FITthesis}[2019/12/23 CTU FIT standard class for theses]
 
-\usepackage[slovak,english]{babel}
-\usepackage {pdfpages}
 
 % created by Ondrej Guth <ondrej.guth@fit.cvut.cz>
 
@@ -57,6 +55,7 @@
 
 \RequirePackage{lmodern}[2009/10/30]
 \RequirePackage{graphicx}[2014/10/28]
+\RequirePackage{pdfpages}
 
 
 \RequirePackage{etoolbox}[2017/01/02]
@@ -134,7 +133,6 @@
 	\def\theabstractcs{\iflanguage{english}{\begin{otherlanguage}{czech}#1\end{otherlanguage}}{#1}}
 	\@abstractcsdefinedtrue
 }
-
 
 \newif\if@abstractendefined
 \DeclareRobustCommand{\abstractEN}[1]{
@@ -493,7 +491,7 @@ sp\^ osobom, ktor\'y nezni\v zuje hodnotu Diela (vr\'atane komer\v cn\'eho vyu\v
 	\fi
 
     \newpage
- 
+    
 	\vfil
 
 	\if@abstractendefined
@@ -513,7 +511,6 @@ sp\^ osobom, ktor\'y nezni\v zuje hodnotu Diela (vr\'atane komer\v cn\'eho vyu\v
 % fix the memoir bug generating structured numbers (e.g., a figure number) without dot
 \renewcommand{\counterwithin}{\@ifstar{\@csinstar}{\@csin}}
 
-	\thispagestyle{empty}
 	\includepdf{thesis/assets/bartoj35-assignment.pdf}
 
 	\frontmatter
